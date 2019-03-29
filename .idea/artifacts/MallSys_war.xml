@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="MallSys:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>MallSys</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="MallSys-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="MallSys:war exploded" />
+    </root>
+  </artifact>
+</component>

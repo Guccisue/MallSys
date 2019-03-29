@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.goods.dao.IChanceGoodsDao">
+    
+    <!-- 分页查询抽奖商品 -->
+    <select id="getAllChanceGoods" parameterType="com.jjn.mall.goods.model.ChanceGoodsListModel" resultType="com.jjn.mall.goods.dao.pojo.ChanceGoodsList">
+       select a.id, a.goodsid, a.standardid, b.name goodsName,c.name merchantName, d.attributevalues, a.numbers, a.goldnumber, a.chance from t_chance_goods a
+       left join t_goods_info b on a.goodsid = b.goodsid 
+       left join t_merchant_info c on c.merchantid = b.merchantid
+       left join t_standard_info d on a.standardid = d.standardid
+       where a.status = 0 and b.status = 1
+       <if test="null != goodsName and goodsName != ''">
+         and b.name like "%"#{goodsName}"%" 
+       </if>
+       order by a.goodsid,a.createtime limit #{startNum}, #{endNum};
+    </select>
+    
+    <!-- 查询抽奖商品总数 -->
+    <select id="getAllChanceGoodsCount" parameterType="com.jjn.mall.goods.model.ChanceGoodsListModel" resultType="java.lang.Integer">
+         select count(1) from t_chance_goods a 
+         left join t_goods_info b on a.goodsid = b.goodsid 
+         where a.status = 0 and b.status = 1
+         <if test="null != goodsName and goodsName != ''">
+         and b.name like "%"#{goodsName}"%" 
+         </if>
+    </select>
+    
+    <!-- 新增抽奖商品 -->
+    <insert id="addChanceGoods" parameterType="java.util.List">
+       insert into t_chance_goods(
+          goodsid, standardid, numbers, goldnumber, chance, creater, createtime, modifier, modifytime
+       )values
+        <foreach item="item" collection="list" index="index"  separator=",">
+            ( #{item.goodsId}, #{item.standardId}, #{item.numbers}, #{item.goldNumber}, #{item.chance}, #{item.creater}, now(), #{item.creater}, now())
+        </foreach>
+    </insert>
+    
+    <!-- 修改抽奖商品 -->
+    <update id="updateChanceGoods" parameterType="java.util.List">
+             update t_chance_goods 
+              <trim prefix="set" suffixOverrides=",">
+	              <trim prefix="numbers =case" suffix="end,">
+	                <foreach collection="list" item="item">
+	                        when id=#{item.id} then #{item.numbers}
+	                </foreach>
+	              </trim>
+	              <trim prefix="goldnumber =case" suffix="end,">
+	                <foreach collection="list" item="item">
+	                        when id=#{item.id} then #{item.goldNumber}
+	                </foreach>
+	              </trim>
+	              <trim prefix="chance =case" suffix="end,">
+	                <foreach collection="list" item="item">
+	                        when id=#{item.id} then #{item.chance}
+	                </foreach>
+	              </trim>
+	              <trim prefix="modifier =case" suffix="end,">
+	                <foreach collection="list" item="item">
+	                        when id=#{item.id} then #{item.modifier}
+	                </foreach>
+	              </trim>
+	              <trim prefix="modifytime =case" suffix="end,">
+	                <foreach collection="list" item="item">
+	                        when id=#{item.id} then now()
+	                </foreach>
+	              </trim>
+              </trim>
+		      <where>
+		            <foreach collection="list" separator="or" item="item">
+		                id = #{item.id}
+		            </foreach>
+		      </where>
+            
+    </update>
+    
+    <!-- 删除抽奖奖品 -->
+    <update id="deleteChanceGoods" parameterType="java.lang.Integer">
+       update t_chance_goods set status = 1 where id = #{id} and modifier = #{modifier}
+    </update>
+    
+    <select id="checkIsExist" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+       select count(1) from  t_chance_goods where goodsid = #{goodsId} and status = 0
+    </select>
+    
+    <!-- 根据商品ID自动获取商品信息 -->
+    <select id="getGoodsDetail" parameterType="java.lang.Integer" resultType="com.jjn.mall.goods.dao.pojo.TGoodsInfo">
+      select a.goodsid,a.name,a.merchantid,b.name as merchantName from t_goods_info a LEFT JOIN t_merchant_info b
+	  on a.merchantid = b.merchantid where a.status = 1 and a.goodsid = #{goodsId}
+    </select>
+    
+    <!-- 查询规格 -->
+    <select id="getGoodsStandard" parameterType="java.lang.Integer" resultType="com.jjn.mall.goods.dao.pojo.TStandardInfo">
+      select standardid, goodsid, attributevalues, price from t_standard_info where goodsid = #{goodsId}
+    </select>
+    <!-- 查询抽奖商品详情 -->
+    <select id="getChanceGoods"  parameterType="java.lang.Integer" resultType="com.jjn.mall.goods.dao.pojo.TChanceGoods">
+      select a.id, a.standardid, b.attributevalues, b.price, a.numbers, a.goldnumber, a.chance from t_chance_goods a 
+      left join t_standard_info b  on a.standardid = b. standardid where a.goodsid = #{goodsId} and status = 0
+      order by id
+    </select>
+    
+    <select id="getSumChanceGoodsRecord" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+      select count(1) from t_chance_goods_record where standardid = #{standardId}
+    </select>
+
+    <select id="getSumLuckyPeoples" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+      select count(1) from t_chance_goods_record where result = 1 and standardid = #{standardId}
+    </select>
+</mapper>

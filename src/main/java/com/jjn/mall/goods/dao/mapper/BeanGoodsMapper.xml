@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.goods.dao.IBeanGoodsInfoDao">
+
+	<!-- 分页查询金豆商城首页商品 -->
+	<select id="getAllBeanGoodsInfo"
+		parameterType="com.jjn.mall.goods.model.BeanGoodsModel"
+		resultType="com.jjn.mall.goods.dao.pojo.TBeanGoods">
+		select a.id, a.goodsid, a.type, b.name name,c.name merchantName,
+		a.sequence from t_goods_beanmall_index a
+		left join t_goods_info b on a.goodsid = b.goodsid
+		left join t_merchant_info c on c.merchantid = b.merchantid
+		where a.status = 0 and b.status = 1
+		<if test="null != name and name != ''">
+			and b.name like "%"#{name}"%"
+		</if>
+		order by a.type,a.sequence limit #{startNum}, #{endNum};
+	</select>
+
+	<!-- 查询金豆商城首页商品总数 -->
+	<select id="getAllBeanGoodsInfoCount"
+		parameterType="com.jjn.mall.goods.model.GoodsModel"
+		resultType="java.lang.Integer">
+		select count(1) from t_goods_beanmall_index a
+		left join t_goods_info b on a.goodsid = b.goodsid
+		where a.status = 0 and b.status = 1
+		<if test="null != name and name != ''">
+			and b.name like "%"#{name}"%"
+		</if>
+	</select>
+
+	<!-- 新增金豆商城首页商品 -->
+	<insert id="addBeanGoodsInfo" parameterType="java.lang.Integer">
+		insert into t_goods_beanmall_index(
+		goodsid, type, sequence, creater, createtime, modifier, modifytime
+		)values(
+		#{goodsId}, #{type}, #{sequence}, #{creater}, now(), #{creater}, now()
+		)
+	</insert>
+
+	<!-- 修改金豆商城首页商品 -->
+	<update id="updateBeanGoodsInfo"
+		parameterType="java.lang.Integer">
+		update t_goods_beanmall_index
+		set
+		type = #{type},
+		sequence = #{sequence},
+		createtime = now(),
+		modifier = #{creater},
+		modifytime = now(),
+		creater = #{creater}
+		where goodsid = #{goodsId}
+	</update>
+
+	<!-- 删除金豆商城首页商品 -->
+	<update id="deleteBeanGoodsInfo"
+		parameterType="java.lang.Integer">
+		update t_goods_beanmall_index set status = 1 , modifier = #{modifier},
+		modifytime = now() where goodsid = #{goodsId}
+		and type = #{type}
+	</update>
+
+	<select id="checkBeanGoodsIsRepeat" resultType="java.lang.Integer">
+		select count(1) from t_goods_beanmall_index where 1 = 1
+		<if test="goodsid != null">
+			and goodsid = #{goodsid}
+		</if>
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		<if test="sequence != null ">
+			and sequence = #{sequence}
+		</if>
+		 and status = 0
+	</select>
+	
+	<select id="checkBeanGoodsIsRepeatUpdate" resultType="java.lang.Integer">
+		select count(1) from t_goods_beanmall_index where 1 = 1
+		<if test="goodsid != null">
+			and goodsid = #{goodsid}
+		</if>
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		<if test="sequence != null ">
+			and sequence = #{sequence}
+		</if>
+		 and status = 0
+	</select>
+
+	<select id="getBeanGoodsInfo" parameterType="java.lang.Integer"
+		resultType="com.jjn.mall.goods.dao.pojo.TBeanGoods">
+		select a.id, a.goodsid, a.type, b.name name,c.name merchantName, a.sequence
+		from t_goods_beanmall_index a
+		left join t_goods_info b on a.goodsid = b.goodsid
+		left join t_merchant_info c on c.merchantid = b.merchantid
+		where a.goodsid = #{goodsId}
+		<if test="type != null ">
+			 and a.type= #{type}
+		</if>
+		 and a.status = 0
+	</select>
+	
+	<select id="getBeanGoodsListInfo" parameterType="java.lang.Integer"
+		resultType="com.jjn.mall.goods.dao.pojo.TBeanGoods">
+		select a.id, a.goodsid, a.type, b.name name,c.name merchantName, a.sequence
+		from t_goods_beanmall_index a
+		left join t_goods_info b on a.goodsid = b.goodsid
+		left join t_merchant_info c on c.merchantid = b.merchantid
+		where a.goodsid = #{goodsId}
+		<if test="type != null ">
+			 and a.type= #{type}
+		</if>
+		 and a.status = 0
+	</select>
+</mapper>

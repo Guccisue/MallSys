@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=8">
+		<meta http-equiv="Expires" content="0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-store">
+    <title>金吉鸟后台管理系统</title>
+    <meta http-equiv="Content-Type" content="multipart/form-data;charset=utf-8"/>
+    <link rel="shortcut icon" href="../../ico/LuckyBird.ico">
+    <link href="../../css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min93e3.css?v=4.4.1" rel="stylesheet">
+    <link href="../../css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../css/animate.min.css" rel="stylesheet">
+    <link href="../../css/style.min862f.css?v=4.1.1" rel="stylesheet">
+    <link href="../../css/add_items.css" rel="stylesheet">
+    <link href="../../css/privat.css" rel="stylesheet">
+    <style>
+        .table thead tr th {
+            width: 16.5%;
+        }
+
+        .table .description {
+            line-height: 26px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            border-bottom: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        #rubricList tr:first-child .description {
+            border-top: none;
+        }
+
+        .coverPic img {
+            height: 80px;
+        }
+        #exampleTableEventsToolbar .btn {
+            margin-bottom: 5px;
+        }
+        .addImg_xq{
+            width:60px;
+            height:60px;
+            top:50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .deleteSmall{
+            top:0;
+            left:90px;
+        }
+        .left{
+            float: left;
+        }
+        .right{
+            float: right;
+        }
+        #table_size_tr div input,#table_size_tr div label,#table_size_tr div{
+            cursor: pointer;
+        }
+        .area_div{
+            margin-right: 20px;
+            position: relative;
+        }
+        .area_div:hover label{
+            color:#f02d2f;
+        }
+        .area_div input{
+            padding:10px 10px;
+            vertical-align: middle;
+        }
+        .area_div label{
+            vertical-align: middle;
+            padding: 10px 10px 0 5px;
+            font-weight: 400;
+        }
+        #area{
+            display: none;
+        }
+        .area_div input,.area_div label,.area_div{
+            cursor: pointer;
+        }
+        .add_city{
+            width:200px;
+            min-height: 30px;
+            max-height:280px;
+            background: #fff;
+            border:1px solid #ccc;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 100;
+            display: none;
+            overflow-y: auto;
+        }
+        .city_div{
+            margin:10px 0;
+            padding:0 20px 0 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .city_div:hover{
+            background: #cfcfcf;
+        }
+        .area_div .add_city .city_div label{
+            color: #0055aa;
+        }
+        .add_div{
+            display: inline-block;
+            margin:10px 0 0 30px;
+        }
+        .add_div:hover{
+            color: #333;
+        }
+        .add_div a{
+            visibility: hidden;
+        }
+        .add_div label{
+            padding:0 5px 0 10px;
+        }
+        .add_div input,.add_div label,.add_div{
+            cursor: pointer;
+        }
+        #seckill{
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>修改商品</h5>
+        </div>
+    </div>
+
+    <div class="ibox-content">
+        <div>
+            <div class="btn-group hidden-xs pull-right" id="exampleTableEventsToolbar" role="group">
+                <button type="button" class="btn btn-outline btn-default" onclick="goBack()">
+                    <i class="glyphicon glyphicon-arrow-left" aria-hidden="true"></i> 返回
+                </button>
+            </div>
+        </div>
+        <div class="password_info" style="margin: 0 auto;">
+            <form enctype="multipart/form-data" onsubmit='return false;'>
+                <table class="table-bordered" style="width: 100%;margin-top: 5px;">
+                    <tr>
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">商品名称</th>
+                        <td style="background: white;"><input id="shId" type="text" maxlength="30" placeholder="请输入商品名称（15 ~ 30个字符）" style="height: 55px;border: none;outline: none;padding: 0 10px;width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">商品卖点</th>
+                        <td style="background: white;">
+                            <div class="items_addForm">
+                                <input id="sellingPoint" type="text" placeholder="请输入商品卖点（至少15个字）" style="border:none;outline: none;padding:0 10px;width:100%;"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">销售区域限制</th>
+                        <td style="background: white;">
+                            <div class="items_addForm" style="text-align: left">
+                                <select id="select_area"style="border:none;outline: none;padding-left: 10px;">
+                                    <option value="0" selected="selected">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="area">
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">限售区域</th>
+                        <td style="background: white;padding:0 50px 0 30px;" id="add_area">
+                            <div class="left area_div">
+                                <input type="checkbox" id="allcity"/>
+                                <label for="allcity" id="allcity_label">全选</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">所属一级类目</th>
+                        <td style="background: white;">
+                            <div class="items_addForm" style="text-align: left">
+                                <select id="select_firstcategory"style="border:none;outline: none; padding-left: 10px;" onchange="queryAllSecondRubric()">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">所属二级类目</th>
+                        <td style="background: white;">
+                            <div class="items_addForm" style="text-align: left">
+                                <select id="select_secondcategory"style="border:none;outline: none;padding-left: 10px;">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="seckill">
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">秒杀时间</th>
+                        <td style="background: white;padding:0 50px 0 10px;" id="add_seckill">
+                            <div class="privat_inputTxt left">
+                                <input id="startDate" type="text" placeholder="开始时间" style="height:36px;text-align: center">
+                                <span style="padding:0 20px;">至</span>
+                                <input id="endDate" type="text" placeholder="结束时间" style="height:36px;text-align: center">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">属性模板</th>
+                        <td style="background: white;">
+                            <div class="items_addForm" style="text-align: left">
+                                <select id="select_model" style="border:none;outline: none;padding-left: 10px;">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="table-bordered" style="width: 100%;border-top:none;" id="table_Property">
+                </table>
+                <table class="table-bordered" style="width: 100%;border-top:none;" id="table_standard">
+                    <tr id="table_standard_tr">
+                         <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%; border-top:none;">规格明细</th>
+                        <th class="items_sizetable_td" style="width: 15%; border-top:none;text-align: center;">规格</th>
+                        <th class="items_sizetable_td" style="width: 15%;border-top:none;text-align: center;">库存</th>
+                        <th class="items_sizetable_td" style="width: 15%;border-top:none;text-align: center;">市场价格</th>
+                        <th class="items_sizetable_td" style="width: 15%;border-top:none;text-align: center;">商城价格</th>
+                        <th class="items_sizetable_td" style="width: 10%;border-top:none;text-align: center;">支持金币数</th>
+                        <th class="items_sizetable_td" style="width: 15%;border-top:none;text-align: center;">图片</th>
+                        <th class="items_sizetable_td" style="border:none;text-align: center;width: 5%;">
+                            <input class="btn btn-outline btn-default" type="button" value="生成规格明细" id="items_sizeBtn" style="background:#1ab394; color:white;border:none;">
+                        </th>
+                    </tr>
+                </table>
+                <table class="table-bordered" style="width: 100%;border-top:none;">
+                    <!-- 商品大图 -->
+                    <tr style="padding: 20px;">
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;border-top:none;">商品大图</th>
+                        <td style="display: none;border-top:none;">
+                            <input type="hidden" id="pic0" data-type="1"/><input type="hidden" id="pic0Size"/>
+                            <input type="hidden" id="pic1" data-type="1"/><input type="hidden" id="pic1Size"/>
+                            <input type="hidden" id="pic2" data-type="1"/><input type="hidden" id="pic2Size"/>
+                            <input type="hidden" id="pic3" data-type="1"/><input type="hidden" id="pic3Size"/>
+                            <input type="hidden" id="pic4" data-type="1"/><input type="hidden" id="pic4Size"/>
+                        </td>
+                        <td style="background: white;border-top:none;">
+                            <div class="item" style="border: none;">
+                                <img class="addImg" onclick="clickImg(this);" src="../../img/zhu_default.png" style="height: 140px;"/>
+                                <input name="url0" id="url0" type="file" class="upload_input" onchange="change(this)" style="border:none;visibility: hidden;"/>
+                                <!--<input type="hidden" id="pic0" name="coverPic">-->
+                                <div class="preBlock" style="width: 100%;">
+                                    <img class="preview" id="preview0" alt="" name="pic" style="display: block;height: 140px;">
+                                </div>
+                                <img class="delete" onclick="deleteImg(this)" data-id="0" src="../../img/delete.png">
+                            </div>
+                            <div class="item">
+                                <img class="icon addImg" onclick="clickImg(this);" src="../../img/zhu_default.png"/>
+                                <input name="url1" id="url1" type="file" class="upload_input"
+                                       onchange="change(this)"/>
+
+                                <div class="preBlock">
+                                    <img class="preview" id="preview1" alt="" name="pic" width="140" height="140"/>
+                                </div>
+                                <img class="delete" onclick="deleteImg(this)" data-id="1" src="../../img/delete.png"/>
+                            </div>
+                            <div class="item">
+                                <img class="icon addImg" onclick="clickImg(this);" src="../../img/zhu_default.png"/>
+                                <input name="url2" id="url2" type="file" class="upload_input"
+                                       onchange="change(this)"/>
+
+                                <div class="preBlock">
+                                    <img class="preview" id="preview2" alt="" name="pic" width="140" height="140"/>
+                                </div>
+                                <img class="delete" onclick="deleteImg(this)" data-id="2" src="../../img/delete.png"/>
+                            </div>
+                            <div class="item">
+                                <img class="icon addImg" onclick="clickImg(this);" src="../../img/zhu_default.png"/>
+                                <input name="url3" id="url3" type="file" class="upload_input"
+                                       onchange="change(this)"/>
+
+                                <div class="preBlock">
+                                    <img class="preview" id="preview3" alt="" name="pic" width="140" height="140"/>
+                                </div>
+                                <img class="delete" onclick="deleteImg(this)" data-id="3" src="../../img/delete.png"/>
+                            </div>
+                            <div class="item">
+                                <img class="icon addImg" onclick="clickImg(this);" src="../../img/zhu_default.png"/>
+                                <input name="url4" id="url4" type="file" class="upload_input"
+                                       onchange="change(this)"/>
+
+                                <div class="preBlock">
+                                    <img class="preview" id="preview4" alt="" name="pic" width="140" height="140"/>
+                                </div>
+                                <img class="delete" onclick="deleteImg(this)"  data-id="4" src="../../img/delete.png"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="table-bordered" style="width: 100%;border-top:none;">
+                    <td style="display: none;" id="pic_xq_input">
+                        <input type="hidden" id="pic_xq0" data-type="2"/><input type="hidden" id="pic_xqSize0"/>
+                    </td>
+                    <tr style="padding: 20px;border-top:none;">
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;border-top:none;">详情图片</th>
+                        <td style="background: white;border-top:none;" id="addImg_xq">
+                            <div class="item" id="addImg_xq_01" style="border: none;">
+                                <img class="addImg" onclick="clickImg(this);" src="../../img/standard_default3.png" style="height: 140px;"/>
+                                <input name="addurl0" id="addurl0" type="file" class="upload_input" onchange="addchange_xq(this)" style="border:none;visibility: hidden;"/>
+                                <!--<input type="hidden" id="pic0" name="coverPic">-->
+                                <div class="preBlock" style="width: 100%;">
+                                    <img class="preview" id="addpreview" alt="" name="pic" style="display: block;height: 140px;">
+                                </div>
+                                <img class="delete" onclick="deleteImg_xq(this)" id="0" src="../../img/delete.png">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="padding: 20px;">
+                        <th style="background-color:#F5F5F6;height: 55px;text-align: center;width:10%;">详情描述</th>
+                        <td style="background: white;text-align: center;">
+                            <textarea name="description" id="description" placeholder="请填写..." style="resize: none;width: 96%;height:200px;margin:20px auto;padding:20px;"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <div style="text-align: center;margin-top:30px;">
+                    <input type="submit" class="btn btn-info" value="保存" data-toggle='modal1' data-target='#video_add' id="add_MerchantsBtn" onclick="addItem()"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src=" ../../js/jquery.min.js"></script>
+<script src="../../js/bootstrap.min.js?v=3.3.6 "></script>
+<script src="../../js/content.min.js?v=1.0.0 "></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../js/demo/bootstrap-table-demo.min.js"></script>
+<script type="text/javascript " src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8 "></script>
+<script src="../../js/laydate.js"></script>
+<script>
+    var startDate = laydate.render({
+        elem: '#startDate',
+        type: 'datetime',
+        done: function (value, date) {
+            if (value != "") {
+                date.month = date.month - 1;
+                endDate.config.min = date;
+            } else {
+                endDate.config.min = startDate.config.min;
+            }
+        }
+    });
+    var endDate = laydate.render({
+        elem: '#endDate',
+        type: 'datetime',
+        done: function (value, date) {
+            if (value != "") {
+                date.month = date.month - 1;
+                startDate.config.max = date;
+            } else {
+                startDate.config.max = endDate.config.max;
+            }
+        }
+    });
+</script>
+<script type="text/javascript " src="../../js/modify_items.js?v=2.26"></script>
+</body>
+</html>

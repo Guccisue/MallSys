@@ -1,0 +1,56 @@
+        .enter_membership {
+            width: 205px;
+            height: 42px;
+        }
+        
+        .membershipMenuTop th {
+            font-size: 15px;
+        }
+        
+        .sel_membership {
+            width: 111px;
+            height: 42px;
+            font-size: 20px;
+        }
+        
+        .sel_membership option {
+            font-size: 10px;
+        }
+        
+        .sub_membership {
+            width: 90px;
+            height: 45px;
+            border: 0;
+            color: white;
+            border-radius: 5px;
+            background-color: rgba(102, 102, 102, 0.5);
+        }
+        /* 会员表格 */
+        
+        .excel_membership {
+            /* border: 1px solid #ccc; */
+            width: 1200px;
+            height: 40px;
+        }
+        
+        .excel_membershipTitle {
+            background-color: rgba(102, 102, 102, 0.5);
+        }
+        
+        .excel_membership th {
+            color: white;
+            font-size: 10px;
+            font-weight: 200;
+            line-height: 30px;
+            text-align: center;
+            border-left: 1px solid #ccc;
+        }
+        
+        .excel_membership td {
+            font-size: 10px;
+            font-weight: 200;
+            line-height: 40px;
+            text-align: center;
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }

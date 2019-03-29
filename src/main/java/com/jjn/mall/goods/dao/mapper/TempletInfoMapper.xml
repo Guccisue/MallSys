@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.goods.dao.ITempletInfoDao">
+    
+    <!-- 分页查询模板 -->
+    <select id="getAllTempletInfo" parameterType="com.jjn.mall.goods.model.TempletInfoModel" resultType="com.jjn.mall.goods.dao.pojo.TTempletInfo">
+       select id, name from t_templet_info 
+       where 1 = 1
+       <if test="merchantId > 0 ">
+	    		and  merchantid = #{merchantId}  or merchantid = 0
+	   </if>
+	   <if test="categoryId > 0 ">
+	    		and  categoryid = #{categoryId}  
+	   </if>
+	    order by modifytime desc 
+       <if test="endNum > 0">
+    		limit #{startNum}, #{endNum};
+       </if>
+    </select>
+    
+    <!-- 根据类目查询模板 -->
+    <select id="getTempletInfoByCategoryId" parameterType="java.lang.Integer" resultType="com.jjn.mall.goods.dao.pojo.TTempletInfo">
+       select id, name from t_templet_info 
+       where 1 = 1  and  categoryid = #{categoryId} and merchantid = #{merchantId} or merchantid = 0
+	   order by modifytime desc 
+    </select>
+    
+    <!-- 查询模板总数 -->
+    <select id="getAllTempletInfoCount" parameterType="com.jjn.mall.goods.model.TempletInfoModel" resultType="java.lang.Integer">
+     select count(1) from t_templet_info where 1 = 1
+     <if test="merchantId > 0 ">
+	    		and  merchantid = #{merchantId}  or merchantid = 0
+	 </if>
+    </select>
+    
+    <!-- 新增模板 -->
+    <insert id="addTempletInfo" parameterType="com.jjn.mall.goods.dao.pojo.TTempletInfo" useGeneratedKeys="true" keyProperty="id">
+      insert into t_templet_info(
+         name, categoryid, merchantid, creater, createtime, modifier, modifytime
+      )values(
+         #{name}, #{categoryId}, #{merchantId}, #{creater}, now(), #{creater}, now()
+      )
+    </insert>
+    
+    <!-- 修改模板 -->
+    <update id="updateTempletInfo" parameterType="com.jjn.mall.goods.dao.pojo.TTempletInfo">
+       update t_templet_info set name = #{name}, categoryid = #{categoryId}, modifier = #{modifier}, modifytime = now() where id = #{id}
+    </update>
+    
+    <!-- 删除模板 -->
+    <delete id="deleteTempletInfo" parameterType="com.jjn.mall.goods.dao.pojo.TTempletInfo">
+      delete  from t_templet_info  where id = #{id}
+    </delete>
+    
+    <!-- 校验模板名称是否重复 -->
+    <select id="checkNameIsRepeat" parameterType="com.jjn.mall.goods.dao.pojo.TTempletInfo" resultType="java.lang.Integer">
+       select count(1) from t_templet_info where name = #{name} and merchantid = #{merchantId}
+    </select>
+    
+    <!-- 查询模板详情 -->
+    <select id="getTempletInfo" parameterType="com.jjn.mall.goods.model.TempletDetailModel" resultType="com.jjn.mall.goods.model.TempletDetailModel">
+        select a.id, a.name,a.categoryid, b.parentid, a.merchantid  from t_templet_info  a
+		LEFT JOIN t_category_info b
+		on a.categoryid = b.categoryid where id = #{id}
+    </select>
+    
+    <select id="checkTemplateByCategoryId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+      select id from t_templet_info where 1=1 and  categoryid = #{categoryId}
+    </select>
+</mapper>

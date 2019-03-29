@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=8">
+		<meta http-equiv="Expires" content="0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-store">
+    <title>金吉鸟后台管理系统</title>
+    <link rel="shortcut icon" href="../../ico/LuckyBird.ico">
+    <link href="../../css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min93e3.css?v=4.4.1" rel="stylesheet">
+    <link href="../../css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../css/animate.min.css" rel="stylesheet">
+    <link href="../../css/membership_information.css" rel="stylesheet">
+    <link href="../../css/style.min862f.css?v=4.1.1" rel="stylesheet">
+    <link href="../../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="../../css/privat.css" rel="stylesheet">
+    <script src="../../js/plugins/sweetalert/sweetalert.min.js"></script>
+    <style>
+    	
+        .table thead tr th{
+            width:16.5%;
+        }
+        .table .description{
+            line-height: 26px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            border-bottom:none;
+            border-left:none;
+            border-right:none;
+        }
+        #rubricList tr:first-child .description{
+            border-top:none;
+        }
+        .coverPic img{
+            height:80px;
+        }
+        .secondcategory{
+            display: none;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>商品结算管理</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="row row-lg">
+                <div class="col-sm-12">
+                    <!-- 商品管理 -->
+                    <div class="example-wrap">
+                        <div class="example">
+                            <div class="private_top">
+                                <table style="border-collapse: separate;border-spacing: 20px;">
+                                    <tr>
+                                        <th>商品名称</th>
+                                        <td class="privat_inputTxt"><input id="merchantName" type="text" style="width:200px"></td>
+                                        <td class="privat_inputSub">
+                                            <div class="btn-group hidden-xs pull-right" style="margin-top:5px;" role="group">
+                                                <button type="button" class="btn btn-outline btn-default" style="background:#1ab394;color:white;border:none;" onclick="doSearch()">
+                                                    <i class="glyphicon glyphicon-search" aria-hidden="true"></i> 搜索
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="btn-group hidden-xs pull-right" style="margin-top:5px;" id="" role="group" data-toggle='modal' data-target='#staff_add'>
+                                            <button type="button" class="btn btn-outline btn-default" style="background:#1ab394;color:white;border:none;margin-left: 10px;">
+                                                <i class="glyphicon glyphicon-plus" aria-hidden="true"></i> 新建
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <table class="table table-bordered table-hover" data-height="400" style="margin-bottom:0;table-layout: fixed;"
+                                   data-mobile-responsive="true">
+                                <thead>
+                                <tr class="excel_membershipTitle">
+                                    <th>商品ID</th>
+                                    <th>商品名称</th>
+                                    <th>结算模式</th>
+                                    <th>结算开始日期</th>
+                                    <th>结算结束日期</th>
+                                    <th>结算比例</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="goodsList" class="video_tab">
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="pull-left" style="margin-top:15px">每页显示
+                                        <select id="select_pagesize" onchange="changePageSize()">
+                                            <option value="10">10</option>
+                                            <option value="15" selected="selected">15</option>
+                                            <option value="20">20</option>
+                                            <option value="25">25</option>
+                                            <option value="30">30</option>
+                                        </select> 条, 共 <label id="label_totalpage"></label> 页
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="pull-right">
+                                        <ul class="pagination">
+                                            <li onclick="lastPage()"><a>上一页</a></li>
+                                            <li><span id="pageNo">1</span></li>
+                                            <li onclick="nextPage()"><a>下一页</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="staff_add" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width:400px;margin-top:185px;">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header" style="height:50px;padding-top:15px;">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <div class="pull-left" style="text-align: center;">
+                    <h4>新增商品结算信息</h4>
+                </div>
+            </div>
+            <div class="modal-body" style="background-color:#fff;padding-bottom:0px;padding-top:10px;">
+                <div class="menu_accountAdd" style="min-height: 300px;">
+                    <table style="border-collapse: separate;border-spacing: 35px 20px;">
+                        <tr>
+                            <th>商品ID</th>
+                            <td style="position: relative;">
+                                <input type="text" placeholder="请填写商品ID" id="inputShopId" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>商品名称</th>
+                            <td>
+                                <input type="text" placeholder="自动获取" id="inputShopName" disabled="disabled" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <th>结算模式</th>
+                            <td style="display: flex; align-items: center;flex-direction: row;line-height: 30px;">
+                                <input type="radio" id="ratio" name="type" style="height: 30px;text-indent: 10px;margin: 0;" value="1">
+                                <label for="ratio" style="margin: 0 8px;">按比例</label>
+                                <input type="radio" id="money" name="type" style="height: 30px;text-indent: 10px;margin: 0;" value="2">
+                                <label for="money" style="margin: 0 8px;">按金额</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>结算比例</th>
+                            <td>
+                                <input type="text" id="inputRatio" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>生效日期</th>
+                            <td>
+                                <input type="text" placeholder="生效日期" id="startTime" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>结束日期</th>
+                            <td>
+                                <input type="text" placeholder="结束日期" id="endTime" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="form-group form-group-sm" style="text-align: center;margin-top: 30px;">
+                    <input type="button" class="btn btn-warning" value="保存" onclick="staffAdd()">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="modal_edit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width:400px;margin-top:185px;">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header" style="height:50px;padding-top:15px;">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <div class="pull-left" style="text-align: center;">
+                    <h4>修改商品结算信息</h4>
+                </div>
+            </div>
+            <div class="modal-body" style="background-color:#fff;padding-bottom:0px;padding-top:10px;">
+                <div class="menu_accountAdd" style="min-height: 300px;">
+                    <table style="border-collapse: separate;border-spacing: 35px 20px;">
+                        <tr>
+                            <th>商品ID</th>
+                            <td style="position: relative;">
+                                <input type="text" placeholder="请填写商品ID" id="inputShopId_edit" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>商品名称</th>
+                            <td>
+                                <input type="text" placeholder="自动获取" id="inputShopName_edit" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                         <tr>
+                            <th>结算模式</th>
+                            <td style="display: flex; align-items: center;flex-direction: row;line-height: 30px;">
+                                <input type="radio" id="ratio_edit" name="type_edit" style="height: 30px;text-indent: 10px;margin: 0;" value="1">
+                                <label for="ratio_edit" style="margin: 0 8px;">按比例</label>
+                                <input type="radio" id="money_edit" name="type_edit" style="height: 30px;text-indent: 10px;margin: 0;" value="2">
+                                <label for="money_edit" style="margin: 0 8px;">按金额</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>结算比例</th>
+                            <td>
+                                <input type="text" id="inputRatio_edit" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>生效日期</th>
+                            <td>
+                                <input type="text" placeholder="生效日期" id="startTime_edit" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>结束日期</th>
+                            <td>
+                                <input type="text" placeholder="结束日期" id="endTime_edit" style="height: 30px;text-indent: 10px;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="form-group form-group-sm" style="text-align: center;margin-top: 30px;">
+                    <input type="button" id="editBtn" class="btn btn-warning" value="保存" onclick="staffEdit()">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../js/jquery.min.js?v=2.1.4"></script>
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<script src="../../js/content.min.js?v=1.0.0"></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../js/demo/bootstrap-table-demo.min.js"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script src="../../js/laydate.js"></script>
+<script>
+    $(function () {
+        var startDate = laydate.render({
+            elem: '#startTime',
+            done: function (value, date) {
+                if (value != "") {
+                    date.month = date.month - 1;
+                    endDate.config.min = date;
+                } else {
+                    endDate.config.min = startDate.config.min;
+                }
+            }
+        });
+        var endDate = laydate.render({
+            elem: '#endTime',
+            done: function (value, date) {
+                if (value != "") {
+                    date.month = date.month - 1;
+                    startDate.config.max = date;
+                } else {
+                    startDate.config.max = endDate.config.max;
+                }
+            }
+        });
+    });
+    $(function () {
+        var startDate = laydate.render({
+            elem: '#startTime_edit',
+            done: function (value, date) {
+                if (value != "") {
+                    date.month = date.month - 1;
+                    endDate.config.min = date;
+                } else {
+                    endDate.config.min = startDate.config.min;
+                }
+            }
+        });
+        var endDate = laydate.render({
+            elem: '#endTime_edit',
+            done: function (value, date) {
+                if (value != "") {
+                    date.month = date.month - 1;
+                    startDate.config.max = date;
+                } else {
+                    startDate.config.max = endDate.config.max;
+                }
+            }
+        });
+    });
+</script>
+<script src="../../js/close_account_goods.js?v=123123"></script>
+</body>
+</html>

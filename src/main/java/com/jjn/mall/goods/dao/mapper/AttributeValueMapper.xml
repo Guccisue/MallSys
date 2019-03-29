@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.goods.dao.IAttributeValueDao">
+    
+    <!-- 根据属性id查询所有的属性值 -->
+    <select id="getAllAttributeValueById" parameterType="com.jjn.mall.goods.dao.pojo.TAttributeValue" resultType="com.jjn.mall.goods.dao.pojo.TAttributeValue">
+       select id , attributevalue  from t_attribute_value where attributeid = #{attributeId} order by createtime desc
+    </select>
+    <!-- 新增属性 -->
+    <insert id="addAttributeValue" parameterType="com.jjn.mall.goods.dao.pojo.TAttributeValue">
+      insert into t_attribute_value(
+         attributeid, attributevalue, creater, createtime
+      )values(
+         #{attributeId}, #{attributeValue}, #{creater}, now()
+      )
+    </insert>
+    
+    <!-- 删除属性 -->
+    <delete id="deleteAttributeValueByAttributeId" parameterType="java.util.List">
+      delete  from t_attribute_value  where attributeid in 
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+</mapper>

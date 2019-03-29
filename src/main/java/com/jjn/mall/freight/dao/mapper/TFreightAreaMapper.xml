@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jjn.mall.freight.dao.IFreightAreaMapper">
+    <resultMap id="BaseResultMap" type="com.jjn.mall.freight.dao.pojo.TFreightTemplet">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="pid" property="pid" jdbcType="VARCHAR"/>
+        <result column="p" property="p" jdbcType="VARCHAR"/>
+        <result column="cid" property="cid" jdbcType="VARCHAR"/>
+        <result column="c" property="c" jdbcType="VARCHAR"/>
+        <result column="did" property="did" jdbcType="VARCHAR"/>
+        <result column="d" property="d" jdbcType="VARCHAR"/>
+        <result column="isfreeshipping" property="isfreeshipping" jdbcType="BIT"/>
+        <result column="isrestrict" property="isrestrict" jdbcType="BIT"/>
+        <result column="merchantid" property="merchantid" jdbcType="INTEGER"/>
+        <result column="creater" property="creater" jdbcType="INTEGER"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="modifier" property="modifier" jdbcType="INTEGER"/>
+        <result column="modifytime" property="modifytime" jdbcType="TIMESTAMP"/>
+        <collection property="areaList"
+                    javaType="ArrayList"
+                    ofType="com.jjn.mall.freight.dao.pojo.TFreightArea"
+                    select="com.jjn.mall.freight.dao.IFreightAreaMapper.selectAreaList"
+                    column="{f_templetid=id}"></collection>
+    </resultMap>
+	
+	<!--查询名称是否重复  -->
+	<select id="checkFreightTempletIsRepeat" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select count(1) from t_freight_templet
+		where name = #{name}
+	</select>
+	
+		
+    <!--查询arealist-->
+    <select id="selectAreaByTempletId" parameterType="java.lang.Integer"
+            resultType="com.jjn.mall.freight.dao.pojo.TFreightArea">
+        select
+        id, f_templetid, pid,
+        p, firstcount, first_freight,
+        continuation, continue_freight
+        from t_freight_area
+        where f_templetid = #{f_templetid}
+    </select>
+    <select id="selectAreaList" resultType="com.jjn.mall.freight.dao.pojo.TFreightArea">
+        select
+        id,
+        f_templetid templetid,
+        pid,
+        p,	
+        firstcount,
+        first_freight firstFreight,
+        continuation,
+        continue_freight continueFreight,
+        creater,
+        createtime
+        from t_freight_area
+        where f_templetid = #{f_templetid}
+    </select>
+
+
+    <insert id="addFreightTemplet" parameterType="com.jjn.mall.freight.dao.pojo.TFreightTemplet" useGeneratedKeys="true"
+            keyProperty="id">
+    insert into t_freight_templet ( name, pid,
+      p, cid, c, did,
+      d, isfreeshipping, isrestrict,
+      merchantid, creater, createtime,
+      modifier, modifytime)
+    values (#{name}, #{pid},
+      #{p}, #{cid}, #{c}, #{did},
+      #{d,jdbcType=VARCHAR}, #{isfreeshipping}, #{isrestrict},
+      #{merchantid}, #{creater}, now(),
+      #{modifier}, now())
+  </insert>
+
+    <!-- 新增运费模板下的目的地 -->
+    <insert id="addFreightArea">
+        insert into t_freight_area(
+        f_templetid, pid,
+        p, firstcount, first_freight,
+        continuation, continue_freight, creater,
+        createtime
+        )values
+        <foreach item="item" collection="areaList" index="index" separator=",">
+            ( #{item.templetid}, #{item.pid},
+            #{item.p}, #{item.firstcount}, #{item.firstFreight},
+            #{item.continuation}, #{item.continueFreight}, #{item.creater},
+            now())
+        </foreach>
+    </insert>
+
+    <!--查询单个运费模板-->
+    <select id="getTempletSingle" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        id, name, pid,
+        p, cid, c, did,
+        d, isfreeshipping, isrestrict,
+        merchantid, creater, createtime,
+        modifier, modifytime
+        from t_freight_templet
+        where id = #{id}
+    </select>
+    <update id="updateFreightArea" parameterType="java.util.List">
+        <foreach collection="areaList" separator=";" item="area">
+            update t_freight_area
+            <set>
+                <if test="area.templetid != null">
+                    f_templetid = #{area.templetid},
+                </if>
+                <if test="area.pid != null">
+                    pid = #{area.pid},
+                </if>
+                <if test="area.p != null">
+                    p = #{area.p},
+                </if>
+                <if test="area.firstcount != null">
+                    firstcount = #{area.firstcount},
+                </if>
+                <if test="area.firstFreight != null">
+                    first_freight = #{area.firstFreight},
+                </if>
+                <if test="area.continuation != null">
+                    continuation = #{area.continuation},
+                </if>
+                <if test="area.continueFreight != null">
+                    continue_freight = #{area.continueFreight},
+                </if>
+                <if test="area.creater != null">
+                    creater = #{area.creater},
+                </if>
+                <if test="area.createtime != null">
+                    createtime = #{area.createtime},
+                </if>
+            </set>
+            where id = #{area.id}
+        </foreach>
+    </update>
+
+    <!--删除TFreight-->
+    <delete id="deleteFreightArea" parameterType="java.util.List">
+        delete from t_freight_area
+        where id in
+        <foreach collection="areaList" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+    <!--修改运费模板-->
+    <update id="updateFreightTemplet" parameterType="com.jjn.mall.freight.dao.pojo.TFreightTemplet">
+    update t_freight_templet
+    set name = #{name,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=VARCHAR},
+      p = #{p,jdbcType=VARCHAR},
+      cid = #{cid,jdbcType=VARCHAR},
+      c = #{c,jdbcType=VARCHAR},
+      did = #{did,jdbcType=VARCHAR},
+      d = #{d,jdbcType=VARCHAR},
+      isfreeshipping = #{isfreeshipping,jdbcType=BIT},
+      isrestrict = #{isrestrict,jdbcType=BIT},
+      merchantid = #{merchantid,jdbcType=INTEGER},
+      creater = #{creater,jdbcType=INTEGER},
+      createtime = now(),
+      modifier = #{modifier,jdbcType=INTEGER},
+      modifytime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <!--删除运费模板-->
+    <update id="deleteFreightTemplet" parameterType="java.lang.Integer">
+        update t_freight_templet
+        set status = 1
+        where id = #{templetId}
+    </update>
+
+    <!--搜索该商户所有运费模板-->
+    <select id="getAllFreightTempletInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        id, name, pid,
+        p, cid, c, did,
+        d, isfreeshipping, isrestrict,
+        merchantid, creater, createtime,
+        modifier, modifytime
+        from t_freight_templet
+        where merchantId = #{merchantid}
+        and status = 0
+    </select>
+
+    <!--获取该商户所有的运费模板数量-->
+    <select id="getAllFreightTempletInfoCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select
+        count(*)
+        from t_freight_templet
+        where merchantId = #{merchantid}
+        and status = 0
+    </select>
+
+</mapper>

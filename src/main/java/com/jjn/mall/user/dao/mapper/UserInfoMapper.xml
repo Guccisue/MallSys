@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.user.dao.IUserInfoDao">
+    <!-- ===================权限管理 Start=================== -->
+    <!-- 新增权限信息 -->
+    <insert id="addAuth" parameterType="com.jjn.mall.user.dao.pojo.TAuthInfo" useGeneratedKeys="true" keyProperty="authId">
+        insert into t_auth_info(
+        		parentid, name, url, 
+        		status, creater, createtime
+        	) value (
+        		#{parentId}, #{name}, #{url}, 
+        		#{status}, #{creater}, now()
+        	);
+    </insert>
+    
+    <!-- 校验是否重名 -->
+    <select id="selectAuthByName" parameterType="com.jjn.mall.user.dao.pojo.TAuthInfo" resultType="java.lang.Integer">
+        select count(1) from t_auth_info where name = #{name} 
+		<if test="authId != null and authId > 0">and authid != #{authId}</if>
+    </select>
+    
+    <!-- 更新权限信息 -->
+    <update id="updateAuth" parameterType="com.jjn.mall.user.dao.pojo.TAuthInfo">
+    	update t_auth_info set 
+    			parentid = #{parentId}, name = #{name}, url = #{url},  
+    			modifier = #{modifier}, modifytime = now() 
+    		where authid = #{authId};
+    </update>
+    
+    <!-- 删除权限信息 -->
+    <delete id="deleteAuth" parameterType="com.jjn.mall.user.dao.pojo.TAuthInfo">
+    	delete from t_auth_info where authid = #{authId};
+    </delete>
+
+    <!-- 查找权限信息 -->
+    <select id="getAllAuth" parameterType="com.jjn.mall.user.dao.pojo.TAuthInfo" resultType="com.jjn.mall.user.dao.pojo.TAuthInfo">
+    	select authid, parentid, name, url, status from t_auth_info
+    		where status = #{status} and parentid = #{authId};
+    </select>
+    
+    <select id="getAuth" parameterType="com.jjn.mall.user.dao.pojo.TAuthInfo" resultType="com.jjn.mall.user.dao.pojo.TAuthInfo">
+    	select authid, parentid, name, url, status from t_auth_info
+    		where status = #{status} and parentid = #{parentId};
+    </select>
+    
+    <!-- ===================权限管理 End=================== -->
+    
+    <!-- ===================角色权限绑定管理 Start=================== -->
+    <!-- 查看是否存在角色权限绑定关系 -->
+    <select id="selectRoleAuthBind"  parameterType="com.jjn.mall.user.dao.pojo.TRoleAuth" resultType="java.lang.Integer">
+    	select count(1) from t_role_auth where 1=1 
+    	<if test="null != roleId and roleId != ''">and roleid = #{roleId} </if>
+    	<if test="null != authId and authId != ''">and authid = #{authId} </if>
+    </select>
+    
+    <!-- 删除角色信息 -->
+    <delete id="deleteRoleAuth" parameterType="com.jjn.mall.user.dao.pojo.TRoleAuth">
+    	delete from t_role_auth where roleid = #{roleId} 
+		<if test="null != authId and authId != ''">and authid = #{authId} </if>
+    </delete>
+    
+    <select id="getAllBindAuthId" parameterType="com.jjn.mall.user.dao.pojo.TRoleAuth" resultType="com.jjn.mall.user.dao.pojo.TRoleAuth">
+    	select * from t_role_auth where roleid= #{roleId};
+    </select>
+    
+    <!-- 新增角色权限绑定关系 -->
+    <insert id="doRoleAuthBind" parameterType="com.jjn.mall.user.dao.pojo.TRoleAuth" useGeneratedKeys="true" keyProperty="id">
+        insert into t_role_auth(
+        		roleid, authid
+        	) value (
+        		#{roleId}, #{authId}
+        	);
+    </insert>
+    
+    <!-- public List<TAuthInfo> getParentIdById(String[] authIds) throws Exception; -->
+    <select id="getParentIdById" parameterType="java.lang.String" resultType="com.jjn.mall.user.dao.pojo.TAuthInfo">
+       select parentid from t_auth_info where authid in 
+        <foreach collection="array" item="item" index="index" open="(" separator=","  close=")">
+          #{item}
+        </foreach>
+        GROUP BY parentid
+    </select>
+    
+    <!-- ===================角色权限绑定 End=================== -->
+    
+    <!-- ===================角色管理 Start=================== -->
+    <!-- 新增角色信息 -->
+    <insert id="addRole" parameterType="com.jjn.mall.user.dao.pojo.TRoleInfo" useGeneratedKeys="true" keyProperty="roleId">
+        insert into t_role_info
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+    	<if test="null != name">
+    		name, 
+    	</if>
+    	<if test="null != description">
+    		description, 
+    	</if>
+    	<if test="null != status">
+    		status, 
+    	</if>
+    	<if test="null != creater">
+    		creater, 
+    	</if>
+    		createtime, 
+    	</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," > 
+    	<if test="null != name">
+    		#{name}, 
+    	</if>
+    	<if test="null != description">
+    		#{description},
+    	</if>
+    	<if test="null != status">
+    		#{status},
+    	</if>
+    	<if test="null != creater">
+    		#{creater}, 
+    	</if>    	
+    		now(), 
+       </trim>
+    </insert>
+    
+    <!-- 校验是否重名 -->
+    <select id="selectRoleByName" parameterType="com.jjn.mall.user.dao.pojo.TRoleInfo" resultType="java.lang.Integer">
+        select count(1) from t_role_info where name = #{name} 
+		<if test="roleId != null and roleId > 0">and roleid != #{roleId}</if>
+    </select>
+    
+    <!-- 更新角色信息 -->
+    <update id="updateRole" parameterType="com.jjn.mall.user.dao.pojo.TRoleInfo">
+    	update t_role_info set 
+    			name = #{name}, description = #{description},  
+    			modifier = #{modifier}, modifytime = now() 
+    		where roleid = #{roleId};
+    </update>
+    
+    <!-- 删除角色信息 -->
+    <delete id="deleteRole" parameterType="com.jjn.mall.user.dao.pojo.TRoleInfo">
+    	delete from t_role_info where roleid = #{roleId};
+    </delete>
+
+    <!-- 查找角色信息 -->
+    <select id="getAllRole" parameterType="com.jjn.mall.user.model.RoleModel" resultType="com.jjn.mall.user.dao.pojo.TRoleInfo">
+    	select roleid, name, description, status from t_role_info where status = #{status}
+    	<if test="null != endNum and endNum != '' and endNum != 0">
+    		limit #{startNum}, #{endNum};
+    	</if>
+    </select>
+    
+    <select id="getRoleCount" parameterType="com.jjn.mall.user.model.RoleModel" resultType="java.lang.Integer">
+      select count(1) from t_role_info where status = #{status}
+    </select>
+    
+     <select id="getRoleById" parameterType="com.jjn.mall.user.dao.pojo.TRoleInfo" resultType="com.jjn.mall.user.dao.pojo.TRoleInfo">
+    	select roleid, name, description, status from t_role_info where roleid = #{roleId};
+    </select>
+    
+    <!-- ===================角色管理 End=================== -->
+    
+    <!-- ===================用户管理 Start=================== -->
+	<!-- 添加用户信息 -->
+    <insert id="addUser" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo" useGeneratedKeys="true" keyProperty="userId">
+        insert into t_user_info(
+        		account, password, name, phone, type, 
+        		merchantid, departmentid, roleid, 
+        		status, creater, createtime
+        	) value (
+        		#{account}, #{password}, #{name}, #{phone}, #{type}, 
+        		#{merchantId}, #{departmentId}, #{roleId}, 
+        		#{status}, #{creater}, now());
+    </insert>
+    
+    <!-- 校验是否重名 -->
+    <select id="selectUserByName" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo" resultType="java.lang.Integer">
+        select count(1) from t_user_info where account = #{account} 
+		<if test="userId != null and userId > 0">and userid != #{userId}</if>
+    </select>
+    
+    <!-- 更新用户信息 -->
+    <update id="updateUser" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo">
+    	update t_user_info set 
+    			account = #{account}, name = #{name}, phone = #{phone}, roleid = #{roleId}, 
+    			modifier = #{modifier}, modifytime = now(),type= #{type}
+    		<if test="type == 0">, departmentid = #{departmentId} </if>
+    		<if test="type == 1">, merchantid = #{merchantId} </if>
+    		where userid = #{userId};
+    </update>
+    
+    <!-- 注销用户 -->
+    <update id="deleteUser" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo">
+    	update t_user_info set status = #{status}, modifier = #{modifier}, modifytime = now()
+    		where userid = #{userId};
+    </update>
+    
+    <!-- 更新用户密码 -->
+    <update id="updateUserPassword" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo">
+    	update t_user_info set password = #{password}, modifier = #{modifier}, modifytime = now() 
+    		where userid = #{userId};
+    </update>
+    
+    <!-- 用户登录 -->
+    <select id="loginUser" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo" resultType="com.jjn.mall.user.dao.pojo.TUserInfo">
+    	select userid, account, name, phone, type, merchantid, departmentid, roleid, status
+    		from t_user_info where account = #{account} and password = #{password} and status = 1;
+    </select>
+    
+    <!-- 查找用户信息 -->
+    <select id="getAllUser" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo" resultType="com.jjn.mall.user.dao.pojo.TUserInfo">
+	    	SELECT
+					a.userid,
+					a.account,
+					a. NAME,
+					a.phone,
+					a.type,
+					a.merchantid,
+					a.departmentid,
+					a.roleid,
+					a.`status`,
+					b.`name` AS roleName,
+				
+				IF (
+					c.`name` IS NULL,
+					d.`name`,
+					c.`name`
+				) departName
+				FROM
+					t_user_info a
+				LEFT JOIN t_role_info b ON b.roleid = a.roleid
+				LEFT JOIN t_department_info c ON (
+					c.departmentid = a.departmentid
+					AND a.type = 0
+				)
+				LEFT JOIN t_merchant_info d ON (
+					d.merchantid = a.merchantid
+					AND a.type = 1
+				) 
+				where 1=1
+    		<if test="null != status and status != ''"> and a.`status` = #{status} </if>
+    		<if test="null != phone and phone != ''"> and a.phone = #{phone} </if>
+    		order by a.userid desc
+    		<if test="null != endNum and endNum != '' and endNum != 0">
+    		limit #{startNum}, #{endNum}
+         	</if>
+    </select>
+    
+    <select id="getAllUserCount" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo" resultType="java.lang.Integer">
+      select count(1) from (
+      SELECT
+					a.userid,
+					a.account,
+					a. NAME,
+					a.phone,
+					a.type,
+					a.merchantid,
+					a.departmentid,
+					a.roleid,
+					a.`status`,
+					b.`name` AS roleName,
+				
+				IF (
+					c.`name` IS NULL,
+					d.`name`,
+					c.`name`
+				) departName
+				FROM
+					t_user_info a
+				LEFT JOIN t_role_info b ON b.roleid = a.roleid
+				LEFT JOIN t_department_info c ON (
+					c.departmentid = a.departmentid
+					AND a.type = 0
+				)
+				LEFT JOIN t_merchant_info d ON (
+					d.merchantid = a.merchantid
+					AND a.type = 1
+				) 
+				where 1=1
+    		<if test="null != status and status != ''"> and a.status = #{status} </if>
+    		<if test="null != phone and phone != ''"> and a.phone like "%"#{phone}"%" </if>
+      ) temp
+    </select>
+        
+    <!-- 查找用户信息 -->
+    <select id="getUserById" parameterType="com.jjn.mall.user.dao.pojo.TUserInfo" resultType="com.jjn.mall.user.dao.pojo.TUserInfo">
+	    	select a.userid, a.account, a.name, a.phone, a.type, a.merchantid, a.departmentid, a.roleid, a.status,b.`name` as roleName,c.`name` as departName
+	    		from t_user_info a
+			left join t_role_info b
+			on b.roleid = a.roleid
+			left join t_department_info c
+			on c.departmentid = a.departmentid where 1 = 1 
+    		<if test="null != userId and userId != ''"> and a.userid = #{userId} </if>
+    </select>
+    
+    <!-- 查看角色是否绑定了用户 -->
+    <select id="selectUserByRoleId" parameterType="com.jjn.mall.user.dao.pojo.TRoleInfo" resultType="java.lang.Integer">
+        select count(1) from t_user_info where roleid = #{roleId} 
+    </select>
+    
+    <!-- 查看部门是否绑定了用户 -->
+    <select id="selectUserByDepartmentId" parameterType="com.jjn.mall.user.dao.pojo.TDepartmentInfo" resultType="java.lang.Integer">
+        select count(1) from t_user_info where departmentid = #{departmentId} 
+    </select>
+	<!-- ===================用户管理 End=================== -->
+	
+	<!-- ===================部门管理 Start=================== -->
+    <!-- 添加部门信息 -->
+    <insert id="addDepartment" parameterType="com.jjn.mall.user.dao.pojo.TDepartmentInfo" useGeneratedKeys="true" keyProperty="departmentId">
+        insert into t_department_info(
+        		name, parentid, status, 
+        		creater, createtime 
+        	) value (
+        		#{name}, #{parentId}, #{status}, 
+        		#{creater}, now());
+    </insert>
+    
+    <!-- 更新部门信息 -->
+    <update id="updateDepartment" parameterType="com.jjn.mall.user.dao.pojo.TDepartmentInfo">
+    	update t_department_info set 
+    			name = #{name}, parentid = #{parentId}, 
+    			modifier = #{modifier}, modifytime = now() 
+    		where departmentid = #{departmentId};
+    </update>
+    
+    <!-- 校验是否重名 -->
+    <select id="selectDepartmentByName" parameterType="com.jjn.mall.user.dao.pojo.TDepartmentInfo" resultType="java.lang.Integer">
+        select count(1) from t_department_info where name = #{name} 
+		<if test="departmentId != null and departmentId > 0">and departmentid != #{departmentId}</if>
+    </select>
+    
+    <!-- 删除部门信息 -->
+    <delete id="deleteDepartment" parameterType="com.jjn.mall.user.dao.pojo.TDepartmentInfo">
+    	delete from t_department_info where departmentid = #{departmentId};
+    </delete>
+    
+    <!-- 查看部门信息 -->
+    <select id="getAllDepartment" parameterType="com.jjn.mall.user.model.DepartmentModel" resultType="com.jjn.mall.user.dao.pojo.TDepartmentInfo">
+    	select departmentid, parentid, name, status from t_department_info where 1=1 
+    	<if test="null != name and name != ''">
+    		and name like "%"#{name}"%" 
+    	</if>
+    	<if test="null != endNum and endNum != '' and endNum != 0">
+    		limit #{startNum}, #{endNum};
+    	</if>
+    		
+    </select>
+    
+    <!-- 得到部门总数 -->
+    <select id="getAllDepartmentCount" parameterType="com.jjn.mall.user.model.DepartmentModel" resultType="java.lang.Integer">
+    	select count(departmentid) from t_department_info where 1=1 
+    	<if test="null != name and name != ''">
+    		and name like "%"#{name}"%" 
+    	</if>;
+    </select>
+    
+    <!-- 得到树形部门列表 -->
+    <select id="getAllDepartmentTree" parameterType="com.jjn.mall.user.dao.pojo.TDepartmentInfo" resultType="com.jjn.mall.user.dao.pojo.TDepartmentInfo">
+    	select departmentid, parentid, name, status from t_department_info
+    		where status = #{status} and parentid = #{departmentId};
+    </select>
+    <!-- ===================部门管理 End=================== -->
+    
+     <!-- 查找权限信息 -->
+    <select id="getAllAuthNoTree" parameterType="com.jjn.mall.user.dao.pojo.TAuthInfo" resultType="com.jjn.mall.user.dao.pojo.TAuthInfo">
+    	select tai.authid, tai.parentid, tai.name, tai.url, tai.status, tai.ishide 
+    		from t_auth_info tai left join t_role_auth tra on tai.authid = tra.authid
+    		where tai.status = 1 and tra.roleid = #{roleId};
+    </select>
+</mapper>

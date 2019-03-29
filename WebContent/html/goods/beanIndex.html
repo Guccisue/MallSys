@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金吉豆首页管理</title>
+    <meta name="keywords" content="金吉鸟后台管理系统">
+    <meta name="description" content="金吉鸟后台管理系统Html5+CSS3等现代技术实现的金吉鸟后台管理系统">
+    <link rel="shortcut icon" href="../../ico/LuckyBird.ico">
+    <link href="../../css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="../../css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../css/animate.min.css" rel="stylesheet">
+    <link href="../../css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/orderForm_list.css" rel="stylesheet">
+    <style>
+        body {
+            -moz-user-select: text; /*火狐*/
+            -webkit-user-select: text; /*webkit浏览器*/
+            -ms-user-select: text; /*IE10*/
+            -khtml-user-select: text; /*早期浏览器*/
+            user-select: text;
+        }
+        .tree_li{
+            padding-left: 50px;
+            text-align: left;
+        }
+        .menu_accountAdd table tr{
+            height:50px;
+        }
+        .menu_accountAdd table tr th{
+            width:125px;
+            text-align: left;
+            padding-right: 25px;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <!-- Panel Other -->
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>金吉豆首页管理</h5>
+        </div>
+        <div class="ibox-content" style="margin: 0 auto">
+            <ul class="head_search">
+                <li>
+                    <div class="left head_lable">商品名称</div>
+                    <div class="left head_select_pmName">
+                        <input type="text" id="shopName"/>
+                    </div>
+                </li>
+                <li class="privat_inputSub">
+                    <div class="btn-group hidden-xs left" onclick="doSearch()" role="group">
+                        <button type="button" class="btn btn-outline btn-default" style="margin-top: 15px;background:#1ab394;color:white;border:none;margin-left: 10px;">
+                            <i class="glyphicon glyphicon-search" aria-hidden="true"></i> 查询
+                        </button>
+                    </div>
+                </li>
+                <li class="privat_inputSub">
+                    <div class="btn-group hidden-xs left" data-toggle='modal' data-target='#modal_add'  role="group">
+                        <button type="button" class="btn btn-outline btn-default" style="margin-top: 15px;background:#1ab394;color:white;border:none;margin-left: 10px;">
+                            <i class="glyphicon glyphicon-plus" aria-hidden="true"></i> 新增
+                        </button>
+                    </div>
+                </li>
+            </ul>
+            <div class="password_info" style="margin: 0 auto;">
+                <table class="table table-bordered table-hover" id="tableExcel" data-height="400" style="margin-bottom:0;" data-mobile-responsive="true">
+                    <thead>
+                    <tr class="excel_membershipTitle">
+                        <th>商品ID</th>
+                        <th>商品名称</th>
+                        <th>商户名称</th>
+                        <th>推广位置</th>
+                        <th>推荐次序编号</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody_userdata">
+                        <!--<tr>-->
+                            <!--<td>1</td>-->
+                            <!--<td>运动跑鞋</td>-->
+                            <!--<td>李宁</td>-->
+                            <!--<td>金豆超追抵扣推广位</td>-->
+                            <!--<td>110</td>-->
+                            <!--<td align='center'>-->
+                                <!--<div>-->
+                                <!--<a id='modification' data-toggle='modal' data-target='#modal_modification' class='edit' data-id= " + list[i].goodsId + ">-->
+                                    <!--<i class='glyphicon glyphicon-pencil' aria-hidden='true'></i> 修改-->
+                                    <!--</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
+                                <!--<a id='delete' data-toggle='modal' data-target='#modal_delete' class='edit' data-id= " + list[i].goodsId + ">-->
+                                    <!--<i class='glyphicon glyphicon-trash' aria-hidden='true'></i> 删除-->
+                                    <!--</a>-->
+                                <!--</div>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-lg-6" style="margin-left: -62px;margin-top: 57px;">
+                    <div class="pull-left" style="margin-top:88px;margin-left: 80px;">每页显示
+                        <select id="select_pagesize" onchange="changePageSize()">
+                            <option value="10">10</option>
+                            <option value="15" selected="selected">15</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="30">30</option>
+                        </select> 条, 共 <label id="label_totalpage"></label> 页
+                    </div>
+                </div>
+                <div class="col-lg-6" style="margin-top: 118px; margin-left: 38px;">
+                    <div class="pull-right">
+                        <ul class="pagination">
+                            <li onclick="lastPage()"><a>上一页</a></li>
+                            <li><span id="pageNo">1</span></li>
+                            <li onclick="nextPage()"><a>下一页</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="modal_delete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width:400px;margin-top:185px;">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header" style="height:50px;padding-top:15px;">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <div class="pull-left" style="text-align: center;">
+                    <h4>删除商品</h4>
+                </div>
+            </div>
+            <div class="modal-body" style="background-color:#fff;padding-bottom:0px;padding-top:10px;">
+                <div style="min-height: 200px;text-align: center;">
+                    <div style="line-height: 100px;color:#333;font-size: 20px;">
+                        确认删除该商品？
+                    </div>
+                    <div class="form-group form-group-sm" style="text-align: center;margin-top: 30px;">
+                        <input type="button" class="btn" value=" 取消 " onclick="modal_hide()" style="margin-right: 40px;">
+                        <input type="button" class="btn btn-warning" value=" 确认 " onclick="delete_good()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="modal_add" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width:400px;margin-top:185px;">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header" style="height:50px;padding-top:15px;">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <div class="pull-left" style="text-align: center;">
+                    <h4>新增商品</h4>
+                </div>
+            </div>
+            <div class="modal-body" style="background-color:#fff;padding-bottom:0px;padding-top:10px;">
+                <div class="menu_accountAdd" style="min-height: 200px;">
+                    <table style="border-spacing: 35px 20px;width:100%;">
+                        <tr>
+                            <th>商品ID</th>
+                            <td>
+                                <input type="text" placeholder="请输入商品ID" id="shopNumber_add" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>商品名称</th>
+                            <td>
+                                <input type="text" placeholder="自动获取" disabled="disabled" id="shopName_add" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>商户名称</th>
+                            <td>
+                                <input type="text" placeholder="自动获取" disabled="disabled" id="userName_add" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>推荐次序编号</th>
+                            <td>
+                                <input type="text" placeholder="请输入数字，数字越大商品越靠后" id="number_add" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>推荐位置</th>
+                            <td>
+                                <select id="location_add" style="height: 30px;width:100%;">
+                                    <option value="1">金豆超值抵扣推广位</option>
+                                    <option value="0">金豆页尾商品推广位</option>
+                                    <option value="2">金豆超值兑换推广位</option>
+                                    <option value="3">金豆特价捡漏推广位</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="form-group form-group-sm" style="text-align: center;margin-top: 30px;">
+                    <input type="button" class="btn btn-warning" value="保存" onclick="goodsAdd()">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="modal_modification" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width:400px;margin-top:185px;">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header" style="height:50px;padding-top:15px;">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <div class="pull-left" style="text-align: center;">
+                    <h4>新增商品</h4>
+                </div>
+            </div>
+            <div class="modal-body" style="background-color:#fff;padding-bottom:0px;padding-top:10px;">
+                <div class="menu_accountAdd" style="min-height: 200px;">
+                    <table style="border-spacing: 35px 20px;width:100%;">
+                        <tr>
+                            <th>商品ID</th>
+                            <td>
+                                <input type="text" placeholder="请输入商品ID" disabled="disabled" id="shopNumber_mod" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>商品名称</th>
+                            <td>
+                                <input type="text" placeholder="自动获取" disabled="disabled" id="shopName_mod" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>商户名称</th>
+                            <td>
+                                <input type="text" placeholder="自动获取" disabled="disabled" id="userName_mod" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>推荐次序编号</th>
+                            <td>
+                                <input type="text" placeholder="请输入数字，数字越大商品越靠后" id="number_mod" style="height: 30px;width:100%;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>推荐位置</th>
+                            <td>
+                                <select id="location_mod" style="height: 30px;width:100%;">
+                                    <option value="1">金豆超值抵扣推广位</option>
+                                    <option value="0">金豆页尾商品推广位</option>
+                                    <option value="2">金豆超值兑换推广位</option>
+                                    <option value="3">金豆特价捡漏推广位</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="form-group form-group-sm" style="text-align: center;margin-top: 30px;">
+                    <input type="button" class="btn btn-warning" value="保存" onclick="goodsMod()">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery.min.js?v=2.1.4"></script>
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<script src="../../js/content.min.js?v=1.0.0"></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+<script src="../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../js/demo/bootstrap-table-demo.min.js"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script src="../../js/laydate.js"></script>
+<script>
+    var pageNo = 1;
+    var pageSize = 15;
+    var totalPage = 0;
+    var goodsId;
+    var type;
+    var orlType;
+    //    var httpUrl='http://116.62.227.80:8081';
+//    var httpUrl='http://39.96.28.20:8080';
+    //    var httpUrl='http://192.168.10.67:8080';
+        var httpUrl='http://192.168.10.108:8080';
+    $(function () {
+        pageNo = 1;
+        // 初始化数据
+        getData();
+        var startDate = laydate.render({
+            elem: '#startDate',
+            type: 'date'
+        });
+
+    });
+    function modal_hide(){
+        $('#modal_delete').modal('hide');
+        $('#modal_add').modal('hide');
+    }
+//    根据ID查询商品；
+    $('#shopNumber_add').on('input propertychange',function(){
+        var goodsId = $(this).val();
+        $.ajax({
+            url: "../../chance/getGoodsDetail",
+            data: {
+                goodsId: goodsId
+            },
+            dataType: "JSON",
+            type: "GET",
+            success: function (result) {
+                if (result.RESULTCODE == "0") {
+//                    console.log(goodsId)
+//                    console.log(result.RESULTJSON.goodsName)
+                    $('#shopName_add').val(result.RESULTJSON.goodsName);
+                    $('#userName_add').val(result.RESULTJSON.merchantName);
+                } else {
+                    popx(result.RESULTMSG,2)
+                }
+            }
+        })
+    });
+    //新增商品；
+    function goodsAdd(){
+        var shopNumber_add = $('#shopNumber_add').val();
+        var shopName_add = $('#shopName_add').val();
+        var userName_add = $('#userName_add').val();
+        var number_add = $('#number_add').val();
+        var location_add = $('#location_add').val();
+        if (shopNumber_add == ''|| shopNumber_add == undefined || shopNumber_add == null) {
+            popx('请填写商品ID',2);
+            return;
+        }
+        if (shopName_add == ''|| shopName_add == undefined || shopName_add == null) {
+            popx('请确认商品是否存在',2);
+            return;
+        }
+        if (userName_add == ''|| userName_add == undefined || userName_add == null) {
+            popx('请确认商品是否存在',2);
+            return;
+        }
+        if (number_add == ''|| number_add == undefined || number_add == null) {
+            popx('请填写推荐次序编号',2);
+            return;
+        }
+        $.ajax({
+            url: "../../beanGoods/addBeanGoodsInfo",
+            data: {
+                goodsId: shopNumber_add,
+                type: location_add,
+                sequence:number_add
+            },
+            dataType: "JSON",
+            type: "GET",
+            success: function (result) {
+                if (result.RESULTCODE == "0") {
+                    popx('新增成功',2);
+                    $('#modal_add').modal('hide');
+                    getData();
+                    $('#shopNumber_add').val('');
+                    $('#shopName_add').val('');
+                    $('#userName_add').val('');
+                    $('#number_add').val('');
+                } else {
+                    popx(result.RESULTMSG,2)
+                }
+            }
+        })
+    }
+//    修改商品；
+    function goodsMod(){
+        var shopNumber_mod = $('#shopNumber_mod').val();
+        var shopName_mod = $('#shopName_mod').val();
+        var userName_mod = $('#userName_mod').val();
+        var number_mod = $('#number_mod').val();
+        var location_mod = $('#location_mod').val();
+        if (shopNumber_mod == ''|| shopNumber_mod == undefined || shopNumber_mod == null) {
+            popx('请填写商品ID',2);
+            return;
+        }
+        if (shopName_mod == ''|| shopName_mod == undefined || shopName_mod == null) {
+            popx('请确认商品是否存在',2);
+            return;
+        }
+        if (userName_mod == ''|| userName_mod == undefined || userName_mod == null) {
+            popx('请确认商品是否存在',2);
+            return;
+        }
+        if (number_mod == ''|| number_mod == undefined || number_mod == null) {
+            popx('请填写推荐次序编号',2);
+            return;
+        }
+        $.ajax({
+            url: "../../beanGoods/updateBeanGoodsInfo",
+            data: {
+                goodsId: shopNumber_mod,
+                type: location_mod,
+                orlType:orlType,
+                sequence:number_mod
+            },
+            dataType: "JSON",
+            type: "GET",
+            success: function (result) {
+                if (result.RESULTCODE == "0") {
+                    popx('修改成功',2);
+                    $('#modal_modification').modal('hide');
+                    getData();
+                } else {
+                    popx(result.RESULTMSG,2)
+                }
+            }
+        })
+    }
+    // 查询数据
+    function getData() {
+        // 初始化数据
+        $("#tbody_userdata").html("");
+        pageSize = $("#select_pagesize option:selected").val();
+        $.ajax({
+            url: "../../beanGoods/getAllBeanGoodsInfo",
+            data: {
+                pageNo: pageNo,
+                pageSize: pageSize
+            },
+            dataType: "JSON",
+            type: "GET",
+            success: function (result) {
+                if (result.RESULTCODE == "0") {
+                    loadData(result);
+                } else {
+                    popx(result.RESULTMSG,3)
+                }
+            }
+        })
+    };
+    function doSearch() {
+        var shopName = $("#shopName").val();
+        pageNo = 1;
+        // 初始化数据
+        $("#tbody_userdata").html("");
+        $.ajax({
+            url: "../../beanGoods/getAllBeanGoodsInfo",
+            data: {
+                pageNo: pageNo,
+                pageSize: pageSize,
+                name:shopName
+            },
+            type: "GET",
+            dataType: "JSON",
+            success: function (result) {
+//                console.log(result);
+                if (result.RESULTCODE == "0") {
+                    loadData(result);
+                } else {
+                    popx(result.RESULTMSG,2)
+                }
+            }
+        })
+    }
+    //删除；
+    $('#tbody_userdata').on('click','#delete',function () {
+        goodsId = $(this).attr('data-id');
+        type = $(this).attr('data-type');
+    });
+    //修改；
+    $('#tbody_userdata').on('click','#modification',function () {
+        goodsId = $(this).attr('data-id');
+        type = $(this).attr('data-type');
+        $.ajax({
+            url: "../../beanGoods/getBeanGoodsInfo",
+            data: {
+                goodsId:goodsId,
+                type:type
+            },
+            type: "POST",
+            dataType: "JSON",
+            success: function (result) {
+//                console.log(result)
+                if (result.RESULTCODE == "0") {
+                    orlType = result.RESULTJSON.type;
+                    $('#shopNumber_mod').val(result.RESULTJSON.goodsId);
+                    $('#shopName_mod').val(result.RESULTJSON.name);
+                    $('#userName_mod').val(result.RESULTJSON.merchantName);
+                    $('#number_mod').val(result.RESULTJSON.sequence);
+                    $('#location_mod').find("option[value = "+ result.RESULTJSON.type +"]").attr("selected","selected");
+                } else {
+                    popx(result.RESULTMSG,2)
+                }
+            }
+        })
+    });
+    function delete_good(){
+        $.ajax({
+            url: "../../beanGoods/deleteBeanGoodsInfo",
+            data: {
+                goodsId:goodsId,
+                type:type
+            },
+            type: "GET",
+            dataType: "JSON",
+            success: function (result) {
+//                console.log(result)
+                if (result.RESULTCODE == "0") {
+                    getData();
+                    popx('删除成功',2);
+                    $('#modal_delete').modal('hide');
+                } else {
+                    popx(result.RESULTMSG,2)
+                }
+            }
+        })
+    }
+    function loadData(json) {
+        var data = json.RESULTJSON;
+//        console.log(json);
+        if (null == data || "" == data || "undefined" == data) {
+            return;
+        }
+        if (null == data.count || "" == data.count || 1 > data.count) {
+            return;
+        }
+        totalPage = Math.ceil(data.count / pageSize);
+        $('#peopleNUm').text(data.count);
+        $("#label_totalpage")[0].innerHTML = totalPage;
+        $("#pageNo").text(pageNo);
+        var list = data.goodsInfoList;
+        var index = 0;
+        var trList = "";
+        $("#tbody_userdata").html("");
+        for (i in list) {
+            var n = list[i].type;
+            var showType;
+            switch(n) {
+                case 1:
+                    showType = '金豆超值抵扣推广位';
+                    break;
+                case 0:
+                    showType = '金豆页尾商品推广位';
+                    break;
+                case 2:
+                    showType = '金豆超值兑换推广位';
+                    break;
+                case 3:
+                    showType = '金豆特价捡漏推广位';
+                    break;
+            }
+            trList += "<tr>" +
+            "<td>" + list[i].goodsId + "</td>" +
+            "<td>" + list[i].name + "</td>" +
+            "<td>" + list[i].merchantName + "</td>" +
+            "<td>" + showType + "</td>" +
+            "<td>" + list[i].sequence + "</td>" +
+            "<td align='center'>" +
+            "<div>" +
+            "<a id='modification' data-toggle='modal' data-target='#modal_modification' class='edit' data-type= " + list[i].type + " data-id= " + list[i].goodsId + ">" +
+            "<i class='glyphicon glyphicon-pencil' aria-hidden='true'></i> 修改" +
+            "</a>&nbsp;&nbsp;&nbsp;&nbsp;" +
+            "<a id='delete' data-toggle='modal' data-target='#modal_delete' class='edit' data-type= " + list[i].type + " data-id= " + list[i].goodsId + ">" +
+            "<i class='glyphicon glyphicon-trash' aria-hidden='true'></i> 删除" +
+            "</a>" +
+            "</div>" +
+            "</td>" +
+            "</tr>";
+            index++;
+        }
+        $("#tbody_userdata").append(trList);
+    }
+
+    // 翻页操作
+    //上一页
+    function lastPage() {
+        if (pageNo <= 1) {
+            return;
+        }
+        pageNo--;
+        getData();
+        $("#pageNo").text(pageNo);
+    }
+    function nextPage() {
+        if (pageNo >= totalPage) {
+            return;
+        }
+        pageNo++;
+        getData();
+        $("#pageNo").text(pageNo);
+    }
+
+    // 改变表格展示最大行数
+    function changePageSize() {
+        pageNo = 1;
+        getData();
+    }
+    // 格式化日期, 毫秒转String
+    function formatDateTime(inputTime) {
+        var date = new Date(inputTime);
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        var h = date.getHours();
+        h = h < 10 ? ('0' + h) : h;
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        minute = minute < 10 ? ('0' + minute) : minute;
+        second = second < 10 ? ('0' + second) : second;
+        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+    }
+</script>
+</html>

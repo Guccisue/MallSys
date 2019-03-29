@@ -1,0 +1,61 @@
+.membershipIfo_detali tr {
+    border-bottom: 2px solid white;
+}
+
+.membershipIfo_detali th {
+    width: 153px;
+    height: 46px;
+    background-color: rgb(228, 228, 228);
+    text-align: center;
+    font-weight: 200;
+}
+
+.membershipIfo_detali td {
+    width: 612px;
+    height: 46px;
+    background-color: rgb(242, 242, 242);
+    text-align: center;
+    font-weight: 200;
+}
+
+.meIfo_ipt {
+    border: 0;
+    border-radius: 5px;
+    background-color: rgb(255, 102, 0);
+    width: 102px;
+    height: 30px;
+    color: white;
+}
+
+.container {
+    margin-left: 30px;
+    margin-top: 20px;
+}
+
+.containers {
+    margin-left: 30px;
+    margin-top: 10px;
+}
+
+h1 {
+    padding-bottom: 10px;
+    color: darkmagenta;
+    font-weight: bolder;
+}
+
+img {
+    cursor: pointer;
+}
+
+#pic {
+    position: absolute;
+    display: none;
+}
+
+#pic1 {
+    width: 400px;
+    height: 300px;
+    border-radius: 5px;
+    -webkit-box-shadow: 5px 5px 5px 5px hsla(0, 0%, 5%, 1.00);
+    box-shadow: 5px 5px 5px 0px hsla(0, 0%, 5%, 0.3);
+}

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.merchant.dao.IMerchantInfoDao">
+    <!-- ===================商户管理 Start=================== -->
+    <!-- 新增商户 -->
+    <insert id="addMerchant" parameterType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo" useGeneratedKeys="true" keyProperty="merchantId">
+        insert into t_merchant_info(
+        		name, unifiedcreditcode, address, phone, contacts, qqnumber, 
+        		contactsphone, score, status, creater, createtime
+        	) value (
+        		#{name}, #{unifiedCreditCode}, #{address}, #{phone}, #{contacts}, #{qqNumber}, 
+        		#{contactsPhone}, #{score}, #{status}, #{creater}, now()
+        	);
+    </insert>
+    
+    <!-- 校验名称 -->
+    <select id="selectMerchantByName" parameterType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo" resultType="java.lang.Integer">
+        select count(1) from t_merchant_info where name = #{name} 
+		<if test="merchantId > 0">and merchantid != #{merchantId}</if>
+    </select>
+    
+    <!-- 校验统一社会信用代码 -->
+    <select id="selectMerchantByUCC" parameterType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo" resultType="java.lang.Integer">
+        select count(1) from t_merchant_info where unifiedcreditcode = #{unifiedCreditCode} 
+		<if test="merchantId > 0">and merchantid != #{merchantId}</if>
+    </select>
+    
+    <!-- 校验QQ号 -->
+    <select id="selectMerchantByQQNumber" parameterType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo" resultType="java.lang.Integer">
+        select count(1) from t_merchant_info where qqnumber = #{qqNumber} 
+		<if test="merchantId > 0">and merchantid != #{merchantId}</if>
+    </select>
+    
+    <!-- 修改商户 -->
+    <update id="updateMerchant" parameterType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo">
+    	update t_merchant_info set modifytime = now()
+    			<if test="null != name and name != ''">, name = #{name}</if>
+    			<if test="null != unifiedCreditCode and unifiedCreditCode != ''">, unifiedcreditcode = #{unifiedCreditCode}</if>
+    			<if test="null != address and address != ''">, address = #{address}</if>
+    			<if test="null != phone and phone != ''">, phone = #{phone}</if>
+    			<if test="null != contacts and contacts != ''">, contacts = #{contacts}</if>
+    			<if test="null != contactsPhone and contactsPhone != ''">, contactsphone = #{contactsPhone}</if>
+    			<if test="null != qqNumber and qqNumber != ''">, qqnumber = #{qqNumber}</if>
+    			, modifier = #{modifier} 
+    		where merchantid = #{merchantId};
+    </update>
+    
+    <!-- 查询商户 -->
+    <select id="getAllMerchant" parameterType="com.jjn.mall.merchant.model.MerchantModel" resultType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo">
+    	select merchantid, name, unifiedcreditcode, address, phone, contacts, qqnumber, contactsphone, score, status 
+    		from t_merchant_info where 1=1 and status = 1 
+    	<if test="null != name and name != ''">
+    		and name like "%"#{name}"%" 
+    	</if>
+    	<if test="merchantId > 0">
+    		and merchantid = #{merchantId} 
+    	</if>
+    	order by createtime desc
+    	  limit #{startNum}, #{endNum};
+    		
+    </select>
+    
+    
+    <!-- 查询商户信息 -->
+    <select id="queryAllMerchant"  resultType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo">
+    	SELECT
+			merchantid,
+			NAME,
+			STATUS
+		FROM
+			t_merchant_info
+		WHERE
+			STATUS = 1 
+		ORDER BY
+			createtime DESC
+    </select> 
+    <!-- 得到商户总数 -->
+    <select id="getAllMerchantCount" parameterType="com.jjn.mall.merchant.model.MerchantModel" resultType="java.lang.Integer">
+    	select count(merchantid) from t_merchant_info where 1=1 and status = 1 
+    	<if test="null != name and name != ''">
+    		and name like "%"#{name}"%" 
+    	</if>;
+    </select>
+    
+    <!-- 查询商户 -->
+    <select id="getMerchant" parameterType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo" resultType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo">
+    	select merchantid, name, unifiedcreditcode, address, phone, contacts, contactsphone, qqnumber, score, status 
+    		from t_merchant_info where merchantid = #{merchantId};
+    </select>
+    
+    <!-- 注销商户 -->
+    <update id="deleteMerchant" parameterType="com.jjn.mall.merchant.dao.pojo.TMerchantInfo">
+    	update t_merchant_info set status = #{status}, modifier = #{modifier}, modifytime = now() 
+    		where merchantid = #{merchantId};
+    </update>
+    
+    <!-- 校验商户下是否有上线的商品 -->
+    <select id="checkGoodsMerchantBind" parameterType="com.jjn.mall.goods.dao.pojo.TGoodsInfo" resultType="java.lang.Integer">
+        select count(1) from t_goods_info where merchantid = #{merchantId} and status = 1;
+    </select>
+    <!-- ===================商户管理 End=================== -->
+	
+	<!-- ===================类目管理 Start=================== -->
+	<!-- 新增类目 -->
+	<insert id="addCategory" parameterType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo" useGeneratedKeys="true" keyProperty="categoryId">
+        insert into t_category_info(
+        		name, level, parentid, status, creater, createtime
+        	) value (
+        		#{name}, #{level}, #{parentId}, #{status}, #{creater}, now()
+        	);
+    </insert>
+    
+	<!-- 校验名称 -->
+	<select id="selectCategoryByName" parameterType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo" resultType="java.lang.Integer">
+        select count(1) from t_category_info where name = #{name} and status = 1 and parentid = #{parentId} and level = #{level}
+		<if test="null != categoryId and categoryId > 0">and categoryid != #{categoryId}</if>
+    </select>
+    
+	<!-- 修改类目 -->
+	<update id="updateCategory" parameterType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+    	update t_category_info set modifytime = now()
+    			<if test="null != name and name != ''">, name = #{name}</if>
+    			<if test="level > -1">, level = #{level}</if>
+    			, parentid = #{parentId}
+    			, modifier = #{modifier} 
+    		where categoryid = #{categoryId};
+    </update>
+    
+	<!-- 查询类目 -->
+    <select id="getAllCategory" parameterType="com.jjn.mall.merchant.model.CategoryModel" resultType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+    	select categoryid, name, level, parentid, status 
+    		from t_category_info where status = 1 
+    	<if test="null != name and name != ''">
+    		and name like "%"#{name}"%" 
+    	</if>
+    	<if test="level > -1">
+    		and level =#{level} 
+    	</if>
+    	<if test="parentId > 0">
+    		and parentid =#{parentId} 
+    	</if>
+    	order by categoryid desc 
+    	<if test="null != pageSize and pageSize != ''">
+    		limit #{startNum}, #{pageSize};
+    	</if>
+   	   	
+    </select>
+    
+    <!-- 得到类目总数 -->
+    <select id="getAllCategoryCount" parameterType="com.jjn.mall.merchant.model.CategoryModel" resultType="java.lang.Integer">
+    	select count(categoryid) from t_category_info where status  = 1 
+    	<if test="null != name and name != ''">
+    		and name like "%"#{name}"%" 
+    	</if>;
+    </select>
+    
+    <!-- 查询类目 -->
+    <select id="getCategoryByPid" parameterType="java.lang.Integer" resultType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+    	select categoryid, name, level, parentid, status 
+    		from t_category_info where status = 1 and parentid = #{parentId};
+    </select>
+    
+    <!-- 查询所有二级类目 -->
+    <select id="getAllSecondCategory" resultType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+    	select categoryid, name, level, parentid, status 
+    		from t_category_info where status = 1 and parentid <![CDATA[!= ]]> 0;
+    </select>
+	<!-- 查询类目树形 -->
+	<select id="getAllCategoryTree" parameterType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo" resultType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+    	select categoryid, parentid, name, level, status 
+    		from t_category_info
+    		where status = #{status} and parentid = #{categoryId};
+    </select>
+    
+	<!-- 删除类目 -->
+	<delete id="deleteCategory" parameterType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+    	update  t_category_info set status = 2 where categoryid = #{categoryId};
+    </delete>
+    
+	<!-- 校验类目下是否有商品 -->
+	<select id="checkGoodsCategoryBind" parameterType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo" resultType="java.lang.Integer">
+        select count(1) from t_goods_info where categoryid = #{categoryId} and status = 1;
+    </select>
+    
+    <!-- public TCategoryInfo getCategoryByCategoryId(int categoryId) throws Exception; -->
+    <select id="getCategoryByCategoryId" parameterType="java.lang.Integer" resultType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+        select categoryid, name, level, parentid, status 
+    		from t_category_info where status = 1 and categoryid = #{categoryId};
+    </select>
+    <!-- ===================类目管理 End=================== -->
+</mapper>

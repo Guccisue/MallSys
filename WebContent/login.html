@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>金吉鸟商城管理系统-登录</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="shortcut icon" href="ico/LuckyBird.ico" />
+<script src="js/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+$(function(){
+    $('#login_btn').click(function() {
+        // 得到用户名和密码
+        var uid = $('#userName').val();
+        var pwd = $('#passWord').val();
+        // 验证数据ajax
+        $.ajax({
+            url: "user/loginUser",
+            data: { account: uid, password : pwd },
+            type: "POST",
+            dataType: "JSON",
+            success: function(result) {
+                if (result.RESULTCODE == "0") {
+                    window.location.href = "index.jsp";
+                } else {
+                    alert(result.RESULTMSG);
+                }
+            },
+            error:function(result){
+            	alert("未进入正确方法");
+            }
+        });
+    });
+});
+</script>
+<style type="text/css">
+body{
+	background-image: url(images/login_bg.jpg);
+	height: 900px;
+}
+.main{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+.log_body{
+	width: 500px;
+	height: 500px;
+}
+.main_top {
+	display: flex;
+	justify-content: center;
+}
+.main_top img{
+	width: 100px;
+	height: 100px;
+}
+.main_border{
+	border-radius: 5px;
+	margin: 0 auto;
+	width: 370px;
+	height: 300px;
+}
+input.name {
+	border-radius: 5px;
+	width: 86.5%;
+	padding: 12px 10px 12px 45px;
+	border: none;
+	outline: none;
+	border-radius: 3px;
+	background: rgb(255, 255, 255) url("images/user1.png") no-repeat 10px 10px;
+	font-size: 17px;
+	font-family: 'Yanone Kaffeesatz', sans-serif;
+	letter-spacing: 1px;
+	margin-bottom: 30px;
+}
+input.password {
+	border-radius: 5px;
+	width: 86.5%;
+	padding: 12px 10px 12px 45px;
+	border: none;
+	outline: none;
+	border-radius: 3px;
+	background: rgb(255, 255, 255) url("images/password.png") no-repeat 10px 10px;
+	font-size: 17px;
+	font-family: 'Yanone Kaffeesatz', sans-serif;
+	letter-spacing: 1px;
+	margin-bottom: 20px;
+}
+input.enter{
+	border-radius: 5px;
+	width: 110%;
+	height: 40px;
+	text-align: center;
+	border: 0;
+	/*padding: 12px 10px 12px 45px;*/
+	background-color:rgb(243,150,0); 
+	color: white;
+	font-size: 17px;
+}		
+</style>
+</head>
+<body>
+<div class="main">
+	<div class="log_body">				
+		<div class="main_top">
+			<table style=" border-collapse: separate; border-spacing:20px 10px;">
+			<tbody>
+			<tr>
+				<td><img src="images/login_bgc.png" /></td>
+				<td><div style="height: 40px; border-right: 1px solid white;"></div></td>
+				<td><p style="color: white; font-size:150%; ">商城后台管理系统</p></td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
+		<div class="main_border">
+			<table style="border-collapse: separate; border-spacing:10px 10px; margin:0 auto;">
+				<tbody>
+				<tr><td><input type="text" class="name" name="username" placeholder="用户名" id="userName" /></td></tr>
+				<tr><td><input type="password" class="password" name="password" placeholder="密码" id="passWord" /></td></tr>
+				<tr><td><input type="button" value="登录" class="enter" id="login_btn" /></td></tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

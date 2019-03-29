@@ -1,0 +1,91 @@
+.detailsTab {
+    margin: 0 auto;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.detailsTab table {
+    border-collapse: separate;
+    border-spacing: 0 35px;
+}
+
+.detailsTab th {
+    width: 10%;
+}
+
+.detailsTab td {
+    width: 20%;
+}
+
+.detailsTab img {
+    width: 162px;
+    height: 162px;
+}
+
+.td_inBox {
+    width: 100%;
+    height: 162px;
+}
+
+.discribition_ad {
+    line-height: 22px;
+    height: 20%;
+    font-size: 25px;
+}
+
+.color_ad {
+    height: 70%;
+    font-size: 15px;
+    color: #ccc;
+}
+
+.sale_ad {
+    height: 10%;
+    color: red;
+    line-height: 10px;
+}
+
+.sale_adSp1 {
+    font-size: 15px;
+}
+
+.sale_adSp2 {
+    font-size: 20px;
+}
+
+.sale_adSp3 {
+    font-size: 15px;
+}
+
+.sale_adSp4 {
+    font-size: 20px;
+    color: rgb(121, 124, 125);
+}
+
+.payCut {
+    color: red;
+}
+
+.pay_cutSale1 {
+    font-size: 15px;
+}
+
+.pay_cutSale2 {
+    font-size: 20px;
+}
+
+.pay_cutSale3 {
+    font-size: 15px;
+}
+
+.orderDetails_stateTd {
+    color: orange;
+}
+
+.orderDetails_payWay {
+    color: green;
+}
+
+.orderDetails_returnReason {
+    color: #ccc;
+}

@@ -1,0 +1,133 @@
+.employee_ipt {
+    border: 1px solid;
+    background: rgb(3, 163, 227);
+    color: white;
+    border-radius: 4px;
+}
+
+.employee_header {
+    /* border: 1px solid #ccc; */
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(241, 241, 241);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.employee_border {
+    background-color: rgb(241, 241, 241);
+    margin-top: 10px;
+    padding-left: 10px;
+}
+
+.employee_line {
+    display: flex;
+    justify-content: space-between
+}
+
+.employee_border tr {
+    line-height: 25px;
+}
+
+.employee_tab {
+    /* background-color: #383838; */
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    color: #464646;
+}
+
+.tab-wrapper {
+    /* margin: 60px auto; */
+    width: 70%;
+    max-width: 500px;
+}
+
+.tab-menu li {
+    position: relative;
+    background-color: #fff;
+    color: #bcbcbc;
+    display: inline-block;
+    /* padding: 20px 40px; */
+    opacity: 0.8;
+    cursor: pointer;
+    z-index: 0;
+}
+
+.tab-menu {
+    margin-bottom: -1px;
+}
+
+.tab-menu li:hover {
+    color: #464646;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+.tab-menu li.active {
+    color: #464646;
+    opacity: 1;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+.tab-menu li.active:hover {
+    color: #464646;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+.tab-content>div {
+    background-color: #fff;
+    box-sizing: border-box;
+    width: 200%;
+    max-width: 900px;
+    /* padding: 50px; */
+    min-height: 200px;
+}
+
+
+/* .line {
+    position: absolute;
+    width: 0;
+    height: 7px;
+    background-color: aqua;
+    top: 0;
+    left: 0;
+} */
+
+
+/* 左右切换 */
+
+ul,
+ol,
+li {
+    margin: 0;
+    /*设置外补白为0*/
+    padding: 0;
+    /*设置内补白为0*/
+}
+
+
+/* 左右切换 */
+
+.staff_selsct {
+    border: 1px solid;
+    width: 500px;
+    height: 220px;
+}
+
+.staff_selsct div {
+    float: left;
+}
+
+.ue-container {
+    width: 60%;
+    margin: 0 auto;
+    /* margin-top: 3%; */
+    padding: 20px 40px;
+    border: 1px solid #ddd;
+    background: #fff;
+}

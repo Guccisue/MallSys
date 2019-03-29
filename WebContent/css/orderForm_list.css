@@ -1,0 +1,210 @@
+ul,li{
+    list-style: none;
+    margin: 0;
+    padding:0;
+}
+.left{
+    float:left;
+}
+.right{
+    float:right;
+}
+.head_search{
+    min-height: 60px;
+    overflow: hidden;
+}
+.head_search li{
+    height:60px;
+    display: inline-block;
+}
+.head_input{
+    margin-top: 15px;
+    height:30px;
+    padding-left: 10px;
+}
+.head_search .head_lable:first-child{
+    padding-left: 10px;
+}
+.head_lable{
+    padding:0 10px 0 30px;
+    height:60px;
+    line-height: 60px;
+}
+.head_select,.head_select_pmName{
+    height:30px;
+    padding-top: 15px;
+}
+.head_select select{
+    width:150px;
+    height:30px;
+}
+.head_select_pmName select{
+    width:200px;
+    height:30px;
+}
+.head_select_pmName input{
+    height:30px;
+    padding-left: 10px;
+}
+.privat_inputTxt{
+    height:30px;
+}
+.privat_inputTxt input{
+    width:100px;
+    height:30px;
+    text-align: center;
+}
+
+.head_out{
+    margin-left: 10px;
+}
+.menu_accountAdd{
+    min-height:400px;
+}
+.span-tip {
+     position: absolute;
+     left: 50%;
+     top: 25%;
+     min-width: 200px;
+     padding:10px;
+     line-height: 60px;
+     margin-top: -20px;
+     margin-left: -125px;
+     border-radius: 10px;
+     font-size: 20px;
+     text-align: center;
+     color: #fff;
+     background: #000;
+     z-index: 9999;
+     opacity:0.9;
+ }
+.menu_accountAdd input{
+    padding-left: 4px;
+}
+.tree_ul{
+    height:400px;
+    overflow-y: auto;
+}
+.tree_li{
+    height:40px;
+    line-height: 40px;
+    overflow: hidden;
+}
+#tree_root .tree_li_label {
+    vertical-align: middle;
+    margin:0;
+    padding-left: 10px;
+    width:300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tree_root .tree_li_input {
+    vertical-align: middle;
+    margin:0;
+    width:15px;
+    height:15px;
+}
+.td_checked input{
+     vertical-align:middle;
+     margin-top:0;
+}
+.td_checked label{
+    margin-top:5px;
+}
+.pmName_ul{
+    width:200px;
+    min-height: 30px;
+    position: absolute;
+    background: #fff;
+    border:1px solid #DFDFDF;
+    margin-top: 5px;
+    border-top:none;
+    display: none;
+}
+.pmName_ul li{
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    border-top:1px solid #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pmName_ul li:hover{
+    background: #f5f5f5;
+    color:#333;
+    cursor: pointer;
+}
+.modal_ul{
+    height:400px;
+    overflow-y: auto;
+}
+.modal_ul .modal_li:last-child{
+    border-bottom:none;
+}
+.modal_li{
+    border-bottom: 1px solid #dfdfdf;
+    min-height:40px;
+    padding: 10px 0;
+}
+.modal_li div{
+    line-height: 20px;
+}
+.modal_li div span{
+    font-weight: bold;
+    color:#333;
+}
+.register_select{
+    width: 100%;
+    height: 100px;
+    line-height: 100px;
+}
+.register_select div{
+    padding-right: 20px;
+}
+.register_select select{
+    height:30px;
+    width:150px;
+}
+.register_textarea{
+    width: 100%;
+    height: 200px;
+}
+.register_textarea div{
+    padding-right: 20px;
+}
+.register_textarea textarea{
+    height:200px;
+    width:200px;
+    resize:none;
+    padding:10px;
+}
+.input_ul{
+    min-height: 30px;
+    max-height: 200px;
+    width:100%;
+    border: 1px solid #ccc;
+    background: #fff;
+    position: absolute;
+    top:33px;
+    z-index: 1;
+    overflow-y: auto;
+    display: none;
+}
+.input_ul li{
+    width:100%;
+    color: #666;
+    font: 14px arial;
+    line-height: 26px;
+    padding: 0 8px;
+    cursor: default;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.input_ul li:hover{
+    background: #dfdfdf;
+}

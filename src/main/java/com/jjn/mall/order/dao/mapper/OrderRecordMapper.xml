@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.order.dao.IOrderRecordDao">
+    <!-- ===================订单管理 Start=================== -->
+    <!-- 查看订单 -->
+    <select id="getAllOrderRecord" parameterType="com.jjn.mall.order.model.OrderRecordModel" resultType="com.jjn.mall.order.dao.pojo.TOrderRecord">
+    select tor.orderid, tor.useridapp, tor.phone, tor.goodsname, tor.merchantname, tor.merchantid,tor.receiver, tor.receiveaddress,
+    		 tor.standardname, tor.price, tor.number, tor.status, tor.createtime, tor.realfee, tor.remark,
+    		 tor.paytime, tor.delivertime, tor.receivetime, tor.paytype,tor.refundstatus  
+    		from t_order_record tor
+    			where 1=1  	    	
+	    	<if test="null != receiver and receiver != ''">
+	    		and tor.receiver like "%"#{receiver}"%" 
+	    	</if>
+	    	<if test="status > -1">
+	    		and tor.status = #{status}
+	    	</if>
+	    	<if test="refundStatus > -2">
+	    		and tor.refundstatus = #{refundStatus}
+	    	</if>
+	    	<if test="merchantId > 0">
+	    		and tor.merchantid = #{merchantId}  
+	    	</if>
+	    	<if test="null != phone and phone != ''">
+	    		and tor.phone  like "%"#{phone}"%"
+	    	</if>
+	    	<if test="null != goodsName and goodsName != ''">
+	    		and tor.goodsname  like "%"#{goodsName}"%"
+	    	</if>
+	    	<if test="null != orderId and orderId != ''">
+	    		and tor.orderid  like "%"#{orderId}"%"
+	    	</if>
+	    	<if test="payType > -1">
+	    		and tor.paytype = #{payType}  
+	    	</if>
+	    	<if test="null != startTime and startTime != ''">
+	    		and tor.createtime &gt;= #{startTime} 
+	    	</if>
+	    	<if test="null != endTime and endTime != ''">
+	    		and tor.createtime &lt;= #{endTime} 
+	    	</if>
+	    	order by createtime desc
+	    	<if test="endNum > 0">
+	    	limit #{startNum}, #{endNum};
+	    	</if>
+    		
+    </select>
+    
+    <!-- 查看订单总数 -->
+    <select id="getAllOrderRecordCount" parameterType="com.jjn.mall.order.model.OrderRecordModel" resultType="java.lang.Integer">
+    	select count(orderid)
+    		from t_order_record where 1=1 	    	
+	    	<if test="null != receiver and receiver != ''">
+	    		and receiver like "%"#{receiver}"%" 
+	    	</if>
+	    	<if test="status > -1">
+	    		and status = #{status}
+	    	</if>
+	    	<if test="refundStatus > -2">
+	    		and refundstatus = #{refundStatus}
+	    	</if>
+	    	<if test="merchantId > 0">
+	    		and merchantid = #{merchantId}  
+	    	</if>
+	    	<if test="null != phone and phone != ''">
+	    		and phone like "%"#{phone}"%"
+	    	</if>
+	    	<if test="null != goodsName and goodsName != ''">
+	    		and goodsname like "%"#{goodsName}"%" 
+	    	</if>
+	    	<if test="null != orderId and orderId != ''">
+	    		and orderid like "%"#{orderId}"%"
+	    	</if>
+	    	<if test="payType > -1">
+	    		and paytype = #{payType}  
+	    	</if>
+	    	<if test="null != startTime and startTime != ''">
+	    		and createtime &gt;= #{startTime}  
+	    	</if>
+	    	<if test="null != endTime and endTime != ''">
+	    		and createtime &lt;= #{endTime}  
+	    	</if>
+    </select>
+    
+    <!-- 订单详情 -->
+    <select id="getOrderRecord" parameterType="com.jjn.mall.order.dao.pojo.TOrderRecord" resultType="com.jjn.mall.order.dao.pojo.TOrderRecord">
+    	SELECT
+				a.orderid,
+				a.receiver,
+				a.useridapp,
+				a.phone,
+				a.receiveaddress,
+				a.goodsname,
+				a.standardname,
+				a.price,
+				a.number,
+				a.remark,
+				a.totalprice,
+				b.fee,
+				a.transactionid,
+				a. STATUS,
+				a.realfee,
+				a.goldnumber,
+				a.courier,
+				a.couriernumber,
+				a.paytime,
+				a.paytype,
+				a.refundstatus,
+				a.refundtimes
+			FROM
+				t_order_record a
+			LEFT JOIN t_refund_record b ON b.orderid = a.orderid
+			where a.orderid=#{orderId}
+    </select>
+    
+    <!-- 发货处理 -->
+    <update id="updateOrderRecordDeliver" parameterType="com.jjn.mall.order.dao.pojo.TOrderRecord">
+    	update t_order_record set 
+	    		delivertime = now(), 
+	    		status = #{status},
+	    		courier = #{courier},
+	    		couriernumber = #{courierNumber},
+	    		remark = #{remark},
+	    		modifier = #{modifier} 
+    		where orderid = #{orderId} 
+    </update>
+    <!-- ===================订单管理 End=================== -->
+    
+    <!-- ===================退款管理 Start=================== -->
+    <!-- 退款操作 -->
+    <update id="updateRefundRecord" parameterType="com.jjn.mall.order.dao.pojo.TRefundRecord">
+    	update t_refund_record set 
+    		fee = #{fee},
+    		approver = #{approver},
+    		approvetime = now(),  
+    		status = #{status} 
+    		where refundid = #{refundId};
+    </update>
+    
+    <update id="updateAuditStatus" parameterType="com.jjn.mall.order.dao.pojo.TRefundRecord">
+    	update t_refund_record set 
+    		<if test="null != reason and reason != ''">
+    		reason = #{reason},
+    		</if>
+    		<if test="null != fee and fee != ''">
+    		fee = #{fee},
+    		</if>
+    		<if test="status == 4">
+    		  comptime = now(),
+    		</if>
+    		auditstatus = #{auditStatus},
+    		status = #{status}
+    		where refundid = #{refundId};
+    </update>
+    
+    <!-- 查看退款记录 -->
+    <select id="getRefundRecord" parameterType="com.jjn.mall.order.dao.pojo.TOrderRecord" resultType="com.jjn.mall.order.dao.pojo.TRefundRecord">
+    	SELECT
+		 refundid,
+		 applytime,
+		 fee,
+		 couriernumber,
+		 approvetime,
+		 comptime,
+		 STATUS
+		FROM
+			t_refund_record
+		WHERE
+			orderid =  #{orderId};
+    </select>
+    
+    <update id="updateRefundRtatus" parameterType="com.jjn.mall.order.dao.pojo.TOrderRecord">
+      update t_order_record set refundstatus = #{refundStatus} 
+      <if test="null != canRefund and canRefund != ''">
+          , canrefund = #{canRefund}
+      </if>
+      <if test="null != status and status != ''">
+          , status = #{status}
+      </if>
+       where orderid =  #{orderId};
+    </update>
+    
+    <select id="getRefundIdByOrderId" parameterType="com.jjn.mall.order.dao.pojo.TOrderRecord" resultType="com.jjn.mall.order.dao.pojo.TOrderRecord">
+    select orderid,refundid from t_refund_record
+		where orderid=#{orderId} 
+		order by applytime desc
+		limit 1
+    </select>
+    
+    <!-- 查询已完成已过售后期订单 -->
+    <select id="getAllHaveFinished" resultType="com.jjn.mall.order.dao.pojo.TOrderRecord" parameterType="com.jjn.mall.order.model.OrderRecordModel">
+			SELECT a.orderid, a.status, a.goodsname, a.standardname, a.merchantid, a.merchantname, a.totalprice, a.realfee,a.number,
+			a.couponfee, a.receivetime, a.refundstatus, a.couponid, a.canrefund, d.type, ifnull(d.deductPoint,0) AS deductpoint,
+			IFNULL(b.fee, 0) AS hasRefundMoney, (a.realfee - IFNULL(b.fee, 0)) as canBalanceBefore,
+			if(d.type=1,(a.realfee - IFNULL(b.fee, 0))*d.deductpoint/100,ifnull(d.deductPoint*100*a.number,0)) as canBalanceAfter  
+			FROM
+				t_order_record a
+				LEFT JOIN t_refund_record b ON b.orderid = a.orderid
+				LEFT JOIN t_goods_info c ON c.goodsid = a.goodsid
+				LEFT JOIN t_point_deduct_info d ON
+				IF (
+					(
+						SELECT
+							COUNT(1)
+						FROM
+							t_point_deduct_info
+						WHERE
+							goodsid = a.goodsid
+						AND STATUS = 0
+						AND a.paytime BETWEEN begintime
+						AND endtime
+					) > 0,
+					d.goodsid = a.goodsid,
+					d.categoryid = c.categoryid
+				AND d.merchantid = a.merchantid
+				)
+				AND d. STATUS = 0
+				AND a.paytime BETWEEN d.begintime
+				AND d.endtime
+			WHERE
+			a.`status` = 5
+			<if test="merchantId > 0">
+			and a.merchantid = #{merchantId}
+			</if>
+			AND DATE_FORMAT(a.receivetime,"%Y-%m") = DATE_FORMAT(DATE_SUB(ifnull(#{queryTime},now()),INTERVAL 1 MONTH), "%Y-%m")
+			AND DATE_FORMAT(a.receivetime,"%Y-%m-%d") &lt;= DATE_FORMAT(now(), "%Y-%m-%d")
+			ORDER BY
+			a.merchantid,
+			a.receivetime DESC
+			<if test="pageSize > 0">
+			limit #{startNum}, #{pageSize}; 
+			</if>
+    </select>
+    
+    <select id="getSumCanBalance" parameterType="com.jjn.mall.order.model.OrderRecordModel" resultType="com.jjn.mall.report.model.ReportModel">
+    SELECT a.merchantid, sum((a.realfee - IFNULL(b.fee, 0))) as sumCanBalanceBefore,
+	sum(if(d.type=1,(a.realfee - IFNULL(b.fee, 0))*d.deductpoint/100,ifnull(d.deductPoint*100*a.number,0))) as sumCanBalanceAfter  
+			FROM
+				t_order_record a
+				LEFT JOIN t_refund_record b ON b.orderid = a.orderid
+				LEFT JOIN t_goods_info c ON c.goodsid = a.goodsid
+				LEFT JOIN t_point_deduct_info d ON
+				IF (
+					(
+						SELECT
+							COUNT(1)
+						FROM
+							t_point_deduct_info
+						WHERE
+							goodsid = a.goodsid
+						AND STATUS = 0
+						AND a.paytime BETWEEN begintime
+						AND endtime
+					) > 0,
+					d.goodsid = a.goodsid,
+					d.categoryid = c.categoryid
+				AND d.merchantid = a.merchantid
+				)
+				AND d. STATUS = 0
+				AND a.paytime BETWEEN d.begintime
+				AND d.endtime
+			WHERE
+			a.`status` = 5
+			<if test="merchantId > 0">
+			and a.merchantid = #{merchantId}
+			</if>
+			AND DATE_FORMAT(a.receivetime,"%Y-%m") = DATE_FORMAT(DATE_SUB(ifnull(#{queryTime},now()),INTERVAL 1 MONTH), "%Y-%m")
+			AND DATE_FORMAT(a.receivetime,"%Y-%m-%d") &lt;= DATE_FORMAT(now(), "%Y-%m-%d")
+            GROUP BY  a.merchantid
+    </select>
+    
+     <!-- 查询已完成已过售后期订单数-->
+    <select id="getAllHaveFinishedCount" resultType="java.lang.Integer" parameterType="com.jjn.mall.order.model.OrderRecordModel">
+	  SELECT
+				count(1)
+			FROM
+				t_order_record a
+				LEFT JOIN t_refund_record b ON b.orderid = a.orderid
+				LEFT JOIN t_goods_info c ON c.goodsid = a.goodsid
+				LEFT JOIN t_point_deduct_info d ON
+				IF (
+					(
+						SELECT
+							COUNT(1)
+						FROM
+							t_point_deduct_info
+						WHERE
+							goodsid = a.goodsid
+						AND STATUS = 0
+						AND a.paytime BETWEEN begintime
+						AND endtime
+					) > 0,
+					d.goodsid = a.goodsid,
+					d.categoryid = c.categoryid
+				AND d.merchantid = a.merchantid
+				)
+				AND d. STATUS = 0
+				AND a.paytime BETWEEN d.begintime
+				AND d.endtime
+			WHERE
+				a.`status` = 5
+				<if test="merchantId != null">
+				and a.merchantid = #{merchantId}
+				</if>
+			AND DATE_FORMAT(a.receivetime,"%Y-%m") = DATE_FORMAT(DATE_SUB(ifnull(#{queryTime},now()),INTERVAL 1 MONTH), "%Y-%m")
+			AND DATE_FORMAT(a.receivetime,"%Y-%m-%d") &lt;= DATE_FORMAT(now(), "%Y-%m-%d")
+    </select>
+    
+    <!-- ===================退款管理 End=================== -->
+</mapper>

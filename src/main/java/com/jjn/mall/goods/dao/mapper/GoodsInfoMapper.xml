@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.goods.dao.IGoodsInfoDao">
+    
+    <!-- 分页查询商品 -->
+    <select id="getAllGoods" parameterType="com.jjn.mall.goods.model.GoodsModel" resultType="com.jjn.mall.goods.dao.pojo.TGoodsInfo">
+       select
+			a.goodsid,
+			a.name,
+			a.merchantid,
+			b.name as merchantName,
+			a.categoryid,
+			c.name as categoryName,
+			a.status,
+			a.createtime,
+			a.modifytime
+		from
+			t_goods_info a
+		left join t_merchant_info b on a.merchantid = b.merchantid
+		left join t_category_info c on a.categoryid = c.categoryid
+		where 1=1 
+		    <if test="goodsId > 0">
+	    		and a.goodsid = #{goodsId} 
+	    	</if>
+	    	<if test="null != name and name != ''">
+	    		and a.name like "%"#{name}"%" 
+	    	</if>
+	    	<if test="status > -1">
+	    		and  a.status = #{status} 
+	    	</if>
+	    	<if test="merchantId > 0 ">
+	    		and  a.merchantid = #{merchantId}
+	    	</if>
+	    	<if test="categoryId > 0 ">
+	    		and  a.categoryid = #{categoryId}
+	    	</if>
+	    	<if test="null != beginTime and beginTime != ''">
+	    	    and a.createtime between #{beginTime} and #{endTime}
+	    	</if>
+	    	<if test="null != merchantName and merchantName != ''">
+	    		and  b.`name` like "%"#{merchantName}"%"  
+	    	</if>
+	    	 and a.status != 3 
+    		order by a.modifytime desc limit #{startNum}, #{endNum};
+    </select>
+    
+    <!-- 查询商品总数 -->
+    <select id="getAllGoodsCount" parameterType="com.jjn.mall.goods.model.GoodsModel" resultType="java.lang.Integer">
+         select
+			count(1)
+		from
+			t_goods_info a
+		left join t_merchant_info b on a.merchantid = b.merchantid
+		where 1=1 
+	    	<if test="null != name and name != ''">
+	    		and a.name like "%"#{name}"%" 
+	    	</if>
+	    	<if test="goodsId > 0">
+	    		and a.goodsid = #{goodsId} 
+	    	</if>
+	    	<if test="status > -1">
+	    		and  a.status = #{status} 
+	    	</if>
+	    	<if test="merchantId > 0 ">
+	    		and  a.merchantid = #{merchantId}
+	    	</if>
+	    	<if test="categoryId > 0 ">
+	    		and  a.categoryid = #{categoryId}
+	    	</if>
+	    	<if test="null != beginTime and beginTime != ''">
+	    	    and a.modifytime between #{beginTime} and #{endTime}
+	    	</if>
+	    	<if test="null != merchantName and merchantName != ''">
+	    		and  b.`name` like "%"#{merchantName}"%"  
+	    	</if>
+	    	 and a.status != 3 
+    </select>
+    
+    <!-- 检查商品是否绑定了某个模板 -->
+    <select id="checkGoodsIdByTemplateId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+      select goodsid from t_goods_info where status != 3 and templetid = #{templateId}
+    </select>
+    <!-- 新增商品 -->
+    <insert id="addGoods" parameterType="com.jjn.mall.goods.model.GoodsInfoModel" useGeneratedKeys="true" keyProperty="goodsId">
+       insert into t_goods_info(
+          merchantid, name, sellingpoint, description, categoryid, score, sales, likenumber, sharenumber,
+          isrestrict, deliveryarea, seckilltime, endtime, templetid, status, creater, createtime, modifier, modifytime
+       )values(
+          #{merchantId}, #{name}, #{sellingPoint}, #{description}, #{categoryId}, #{score}, #{sales}, #{likeNumber}, #{shareNumber}, 
+          #{isRestrict}, #{deliveryArea}, #{seckillTime}, #{endTime}, #{templetId}, #{status}, #{creater}, now(), #{creater}, now()
+       )
+    </insert>
+    
+    <!-- 修改商品 -->
+    <update id="updateGoods" parameterType="com.jjn.mall.goods.model.GoodsInfoModel">
+       update t_goods_info  set
+             name = #{name}, sellingpoint = #{sellingPoint}, description = #{description}, categoryid = #{categoryId},
+    	     isrestrict = #{isRestrict}, deliveryarea = #{deliveryArea}, templetid = #{templetId},
+    	     seckilltime = #{seckillTime}, endtime = #{endTime}, modifytime = now(), modifier = #{modifier} 
+    		 where goodsid = #{goodsId}
+    </update>
+    
+    <update id="updateGoodsStatus" parameterType="com.jjn.mall.goods.dao.pojo.TGoodsInfo">
+       update t_goods_info  set  status = #{status},  modifytime = now(),
+    	     modifier = #{modifier} where goodsid = #{goodsId}
+    </update>
+    
+    <!-- 查询商品详情 -->
+    <select id="getGoodsInfo" parameterType="com.jjn.mall.goods.model.GoodsDetailModel" resultType="com.jjn.mall.goods.model.GoodsDetailModel">
+    SELECT
+			a.goodsid,
+			a.name,
+			a.description,
+			a.sellingpoint,
+			a.categoryid,
+			a.isrestrict,
+			a.deliveryarea,
+			a.status,
+			a.templetid,
+			a.seckilltime,
+			a.endtime,
+			b.parentid parentId
+		FROM
+			t_goods_info a
+		LEFT JOIN t_category_info b ON a.categoryid = b.categoryid where goodsid = #{goodsId};
+    </select>
+     
+    <!-- 查询商品名称-->
+    <select id="getGoodsName" parameterType="java.lang.Integer" resultType="java.lang.String">
+     select name from t_goods_info where goodsid = #{goodsId} and status = 1;
+    </select>
+    
+    <!-- 查询商品状态 -->
+    <select id="getGoodsStatus" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+     select status from t_goods_info where goodsid = #{goodsId};
+    </select>
+    
+    <!-- 查询结束时间是前一天的秒杀商品规格 -->
+    <select id="getExpiredGoods" resultType="com.jjn.mall.goods.dao.pojo.TStandardInfo">
+      SELECT
+			a.standardid,
+			a.goodsid
+		FROM
+			t_standard_info a
+		LEFT JOIN t_goods_info b ON a.goodsid = b.goodsid
+		WHERE
+			DATEDIFF(b.endtime, NOW()) = -1
+    
+    </select>
+   
+    
+    <!-- 根据商品id查询商品图片 -->
+    <select id="getAllGoodsPicByGoodsId" parameterType="java.lang.Integer" resultType="com.jjn.mall.goods.dao.pojo.TGoodsPic">
+      select pic, picsize, type, sequence from t_goods_pic where goodsid = #{goodsId} 
+    </select>
+    
+    <!-- 新增商品图片 -->
+    <insert id="addGoodsPic" parameterType="java.util.List">
+      insert into t_goods_pic(pic, picsize, type, goodsid, sequence, creater, createtime) values
+        <foreach item="item" collection="list" index="index"  separator=",">
+            (#{item.pic}, #{item.picSize}, #{item.type}, #{item.goodsId}, #{item.sequence}, #{item.creater}, now())
+        </foreach>
+    </insert>
+    
+    <!-- 删除商品图片 -->
+    <delete id="delGoodsPic" parameterType="com.jjn.mall.goods.dao.pojo.TGoodsPic">
+       delete from t_goods_pic where goodsid = #{goodsId}
+    </delete>
+    
+    
+     <!-- 根据商品id查询所有的属性 -->
+    <select id="getAllGoodsAttributeById" parameterType="com.jjn.mall.goods.dao.pojo.TGoodsAttribute" resultType="com.jjn.mall.goods.dao.pojo.TGoodsAttribute">
+       select id , name, attributevalue  from t_goods_attribute where goodsid = #{goodsId} order by createtime desc
+    </select>
+    
+    <!-- 获取商品属性名称 -->
+    <select id="getAttributeNameListByGoodsId" parameterType="java.lang.Integer"  resultType="java.lang.String">
+      select distinct name from t_goods_attribute where goodsid = #{_parameter}
+    </select>
+    
+    <!-- 根据商品属性名称获取属性值 -->
+    <select id="getAttributeValueList"  resultType="com.jjn.mall.goods.dao.pojo.TGoodsAttribute">
+      select id,attributevalue from t_goods_attribute where goodsid = #{goodsId} and name = #{name}
+    </select>
+    
+    <!-- 新增属性 -->
+    <insert id="addGoodsAttribute" parameterType="java.util.List" >
+      insert into t_goods_attribute(
+         name, attributevalue, goodsid, creater, createtime
+      )values
+       <foreach item="item" collection="list" index="index"  separator=",">
+            (#{item.name}, #{item.attributeValue}, #{item.goodsId}, #{item.creater}, now())
+        </foreach>
+    </insert>
+    
+    <!-- 删除属性 -->
+    <delete id="deleteGoodsAttributeById" parameterType="java.lang.Integer">
+      delete  from t_goods_attribute  where goodsid = #{_parameter}
+    </delete>
+    
+     <!-- 根据商品id查询所有的规格 -->
+    <select id="getAllStandardInfoById" parameterType="com.jjn.mall.goods.dao.pojo.TStandardInfo" resultType="com.jjn.mall.goods.dao.pojo.TStandardInfo">
+       select standardid, attributevalues, marketprice, price, goldnumber, stock, pic  from t_standard_info where goodsid = #{goodsId} order by createtime desc
+    </select>
+    
+    <!-- 新增规格 -->
+    <insert id="addStandardInfo" parameterType="java.util.List" >
+      insert into t_standard_info(
+         attributeids, attributevalues, goodsid, marketprice, price, goldnumber, stock, pic, creater, createtime
+      )values
+       <foreach item="item" collection="list" index="index"  separator=",">
+            ( #{item.attributeIds}, #{item.attributeValues}, #{item.goodsId}, #{item.marketPrice}, #{item.price}, #{item.goldNumber}, #{item.stock}, #{item.pic}, #{item.creater}, now())
+        </foreach>
+    </insert>
+    
+    <!-- 删除规格 -->
+    <delete id="deleteStandardInfoById" parameterType="java.lang.Integer">
+      delete from t_standard_info where goodsid = #{_parameter}
+    </delete>
+    
+    <!-- 新增商品审核记录 -->
+    <insert id="addGoodsAuditingInfo" parameterType="com.jjn.mall.goods.dao.pojo.TGoodsAuditingInfo">
+      insert into t_goods_auditing_info(
+        goodsid, status, rejectreason, creater, createtime
+      )values(
+        #{goodsId}, #{status}, #{rejectReason}, #{creater}, now()
+      )
+    </insert>
+    
+    <!-- 根据商品Id查询审核记录 -->
+    <select id="getAllAuditingInfoByGoodsId" parameterType="java.lang.Integer" resultType="com.jjn.mall.goods.dao.pojo.TGoodsAuditingInfo">
+      select a.status, a.rejectreason, a.creater, b.name, a.createtime from t_goods_auditing_info a left join t_user_info b on a.creater = b.userid where goodsid = #{goodsId} order by createtime desc
+    </select>
+    
+    <select id="getCategoryIdByGoodsId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+      select b.parentid from t_goods_info a left join t_category_info b on a.categoryid = b.categoryid where a.goodsid = #{goodsId}
+    </select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>MallSys</display-name>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring.xml,classpath:spring-mybatis.xml,classpath:spring-task.xml,classpath:spring-redis.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>springMvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring-mvc.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springMvc</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/login.html</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/login.html</location>
+  </error-page>
+  <filter>
+    <filter-name>opFilter</filter-name>
+    <filter-class>com.jjn.mall.filter.opFilter</filter-class>
+    <init-param>
+      <param-name>nofilterpath</param-name>
+      <param-value>login</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>opFilter</filter-name>
+    <url-pattern>/html/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>  
+       <description>跨域过滤器</description>  
+       <filter-name>CORS</filter-name>    
+       <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>    
+       <init-param>    
+        <param-name>cors.allowOrigin</param-name>    
+           <param-value>*</param-value>    
+       </init-param>    
+       <init-param>    
+        <param-name>cors.supportedMethods</param-name>    
+           <param-value>GET, POST, HEAD, PUT, DELETE</param-value>    
+       </init-param>    
+       <init-param>    
+        <param-name>cors.supportedHeaders</param-name>    
+           <param-value>Accept, Origin, X-Requested-With, Content-Type, Last-Modified</param-value>    
+       </init-param>    
+       <init-param>    
+           <param-name>cors.exposedHeaders</param-name>    
+           <param-value>Set-Cookie</param-value>    
+       </init-param>    
+       <init-param>    
+           <param-name>cors.supportsCredentials</param-name>    
+           <param-value>true</param-value>    
+       </init-param>    
+    </filter>  
+
+    <filter-mapping>    
+        <filter-name>CORS</filter-name>    
+        <url-pattern>/*</url-pattern>    
+    </filter-mapping>
+</web-app>

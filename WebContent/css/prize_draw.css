@@ -1,0 +1,133 @@
+/* .prize_time {
+    padding-left: 10px;
+} */
+
+.prize_time1 table {
+    border-collapse: separate;
+    border-spacing: 20px;
+}
+
+.prize_time1 td {
+    padding-left: 20px;
+}
+
+
+/* 添加奖品配置 */
+
+.prize_time2Station {
+    background: rgb(242, 242, 242);
+    width: 570px;
+}
+
+.prize_time2StationIpt {
+    margin-left: 330px;
+    width: 85px;
+    height: 40px;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    background: rgba(54, 66, 74, 0.5);
+}
+
+.prize_time2Station table {
+    border-collapse: separate;
+    border-spacing: 20px;
+}
+
+
+/* 添加奖品配置列表 */
+
+.prize_time2 table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.prize_time2 {
+    width: 700px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.flex_prize_time2 {
+    display: flex;
+    margin: 10px;
+    /* margin-bottom: 10px; */
+    background-color: rgb(242, 242, 242);
+}
+
+.prize_time2Bor {
+    width: 570px;
+    background-color: rgb(242, 242, 242);
+}
+
+.prize_time2Ipt2Delete {
+    margin-left: 20px;
+    margin-top: 150px;
+    width: 85px;
+    height: 40px;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    background: rgba(54, 66, 74, 0.5);
+}
+
+.prize_time2Ipt2Firtd {
+    padding-left: 45px;
+}
+
+.prize_time2Ipt2Sectd {
+    padding-left: 45px;
+}
+
+.prize_time2Ipt2Thitd {
+    padding-left: 30px;
+}
+
+.prize_time2Ipt2Fottd {
+    /* padding-left: 30px; */
+}
+
+
+/* 活动状态 */
+
+.prize_time3 table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.prize_time3 td {
+    padding-left: 45px;
+}
+
+.prize_time3 select {
+    width: 108px;
+    height: 35px;
+}
+
+
+/* 保存 */
+
+.prize_time4IptSave {
+    width: 85px;
+    height: 40px;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    background: rgba(54, 66, 74, 0.5);
+}
+
+.prize_time4 table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.prize_time4 td {
+    /* padding-left: 45px; */
+}
+
+.prize_time4 select {
+    width: 108px;
+    height: 35px;
+}

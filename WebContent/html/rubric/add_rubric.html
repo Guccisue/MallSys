@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=8">
+		<meta http-equiv="Expires" content="0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-store">
+    <title>金吉鸟后台管理系统</title>
+    <meta name="keywords" content="金吉鸟后台管理系统">
+    <meta name="description" content="Html5+CSS3等现代技术实现的金吉鸟后台管理系统">
+    <link rel="shortcut icon" href="../../ico/LuckyBird.ico">
+    <link href="../../css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min93e3.css?v=4.4.1" rel="stylesheet">
+    <link href="../../css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="../../css/animate.min.css" rel="stylesheet">
+    <link href="../../css/style.min862f.css?v=4.1.1" rel="stylesheet">
+	<style>
+         ::-webkit-input-placeholder {
+            /* WebKit browsers */
+            color: #999;
+            text-indent: 5px;
+        }
+        
+         :-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: #999;
+            ttext-indent: 5px;
+        }
+        
+         ::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: #999;
+            text-indent: 5px;
+        }
+        
+         :-ms-input-placeholder {
+            /* Internet Explorer 10+ */
+            color: #999;
+            text-indent: 5px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+
+        <!-- Panel Other -->
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>添加类目</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+
+
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <div class="example">
+                                <div class="btn-group hidden-xs pull-right" id="exampleTableEventsToolbar" role="group">
+                                    <button type="button" class="btn btn-outline btn-default" onclick="goBack()">
+										<i class="glyphicon glyphicon-arrow-left" aria-hidden="true" ></i> 返回
+									</button>
+                                </div>
+							 <div>
+                                    <table style="border-collapse: separate; border-spacing: 10px 10px;">
+                                        <tr>
+                                            <th>
+                                                	类目名称:
+                                            </th>
+                                            <td>
+                                                <input type="text" placeholder="名称" class="lm_name" style="height: 30px;"id="lmName">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                	类目等级:
+                                            </th>
+                                            <td>
+                                                <select name="" id="lmSelted" style="height: 30px;width: 100%;" onchange="changeFirstCategory()">
+                                                    <option value="0" selected="selected">一级类目</option>
+                                                    <option value="1">二级类目</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="tr_secondcategory" style="display: none;">
+                                            <th>
+                                                	上级类目:
+                                            </th>
+                                            <td>
+                                                <select name="" id="select_secondcategory" style="height: 30px;width: 100%; ">
+<!--                                                         <option value="">一级类目</option> -->
+<!--                                                         <option value="">二级类目</option> -->
+                                                    </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <input type="button" value="保存" id="add_rubricBtn" style="width: 50%;height: 30px;border: 0; background-color: #23c6c8;color: white;border-radius: 5px; ">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Example Events -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Other -->
+    </div>
+    <script>
+
+    </script>
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../../js/content.min.js?v=1.0.0"></script>
+    <script src="../../js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="../../js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+    <script src="../../js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="../../js/demo/bootstrap-table-demo.min.js"></script>
+    <script src="../../js/add_rubricAjax.js?v=2.26"></script>
+
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:06 GMT -->
+
+</html>

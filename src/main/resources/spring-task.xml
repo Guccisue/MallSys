@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- 秒杀商品清除redis定时任务 -->
+	<bean name="seckillGoodsTask" class="com.jjn.mall.report.task.SeckillGoodsTask">
+	</bean>
+	<bean id="SeckillGoodsTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="seckillGoodsTask"></property>
+		<property name="targetMethod" value="doSeckillGoodsTask"></property>
+	</bean>
+	<bean id="SeckillGoodsTaskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="SeckillGoodsTaskJob" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 2 * * ?</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 启动调度 -->
+	<bean id="startTask" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="SeckillGoodsTaskJobTrigger" />
+			</list>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.order.dao.IPointDeductInfoDao">
+    <select id="getAllPointDeductInfo" parameterType="com.jjn.mall.order.model.PointDeductInfoModel" resultType="com.jjn.mall.order.dao.pojo.TPointDeductInfo">
+    select a.id, a.merchantid, b.name merchantName, a.target, a.type, a.goodsid, if(a.target = 1,d.name,c.name) name,  a.categoryid,  a.deductpoint, 
+	a.begintime, a.endtime, a.status, a.creater, a.createtime, a.modifier, a.modifytime,if(a.target = 1,(select name from t_category_info where categoryid = d.parentid),"") parentName
+    from t_point_deduct_info a
+	left join t_merchant_info b on a.merchantid = b.merchantid
+	left join t_goods_info c on (c.goodsid = a.goodsid and a.target = 2)
+	left join t_category_info d on (d.categoryid = a.categoryid and a.target = 1)
+	where a.status = 0 and a.target = #{target} and if(a.target = 1,d.status=1,c.status=1)
+			<if test="null != name and name != '' and target == 1">
+	    		and d.name  like "%"#{name}"%"
+	    	</if>
+	    	<if test="null != merchantName and merchantName != ''">
+	    		and b.name  like "%"#{merchantName}"%"
+	    	</if>
+	    	order by a.createtime desc
+    		limit #{startNum}, #{endNum};
+    </select>
+    
+    <select id="getAllPointDeductInfoCount" parameterType="com.jjn.mall.order.model.PointDeductInfoModel" resultType="java.lang.Integer">
+        select count(1)
+	    from t_point_deduct_info a
+		left join t_merchant_info b on a.merchantid = b.merchantid
+		left join t_goods_info c on (c.goodsid = a.goodsid and a.target = 2)
+		left join t_category_info d on (d.categoryid = a.categoryid and a.target = 1)
+		where a.status = 0 and a.target = #{target} and if(a.target = 1,d.status=1,c.status=1)
+			<if test="null != name and name != '' and target == 1">
+	    		and d.name  like "%"#{name}"%"
+	    	</if>
+	    	<if test="null != merchantName and merchantName != ''">
+	    		and b.name  like "%"#{merchantName}"%"
+	    	</if>
+    </select>
+    
+    <select id="getPointDeductInfo" parameterType="java.lang.Integer" resultType="com.jjn.mall.order.dao.pojo.TPointDeductInfo">
+    	select a.id, a.merchantid, b.name merchantName, a.target, a.type, a.goodsid, if(a.target = 1,d.name,c.name) name,  a.categoryid,  a.deductpoint, 
+		a.begintime, a.endtime, (select parentid from t_category_info where categoryid = a.categoryid) parentId
+	    from t_point_deduct_info a
+		left join t_merchant_info b on a.merchantid = b.merchantid
+		left join t_goods_info c on (c.goodsid = a.goodsid and a.target = 2)
+		left join t_category_info d on (d.categoryid = a.categoryid and a.target = 1)
+		where a.id = #{id}
+    </select> 
+    
+    <insert id="addPointDeductInfo" parameterType="com.jjn.mall.order.dao.pojo.TPointDeductInfo">
+     insert into t_point_deduct_info(
+         merchantid, target, type, goodsid, categoryid, deductpoint, begintime, endtime, 
+         status, creater, createtime, modifier, modifytime
+         ) values(
+         #{merchantId}, #{target}, #{type}, #{goodsId}, #{categoryId}, #{deductPoint}, #{beginTime}, #{endTime},
+         #{status}, #{creater}, NOW(), #{creater}, NOW()
+         )
+    </insert>
+    
+    <update id="updatePointDeductInfo" parameterType="com.jjn.mall.order.dao.pojo.TPointDeductInfo">
+     update t_point_deduct_info set 
+                   modifytime = now(), 
+                   modifier = #{modifier}, 
+                   merchantid = #{merchantId}, 
+                   type = #{type}, 
+                   target = #{target}, 
+				   goodsid = #{goodsId}, 
+				   categoryid = #{categoryId}, 
+				   deductpoint = #{deductPoint}, 
+				   begintime = #{beginTime}, 
+				   endtime = #{endTime} 
+	 where id = #{id}
+    </update>
+    
+    <update id="deletePointDeductInfo" parameterType="com.jjn.mall.order.dao.pojo.TPointDeductInfo">
+     update t_point_deduct_info set status = 1, modifytime = now(), modifier = #{modifier} where id = #{id} 
+    </update>
+    
+    <select id="checkTimeRepeat" parameterType="com.jjn.mall.order.dao.pojo.TPointDeductInfo" resultType="java.lang.Integer">
+      select count(1) from t_point_deduct_info where status = 0 and merchantid = #{merchantId} and categoryid = #{categoryId}
+      and goodsid = #{goodsId} and not(endtime &lt; #{beginTime} or begintime &gt; #{endTime})
+      <if test="id > 0">
+        and id  <![CDATA[!= ]]> #{id}
+      </if>
+    </select>
+    
+    <select id="getAllParentIdByMerchantId" parameterType="java.lang.Integer" resultType="com.jjn.mall.merchant.model.CategoryModel">
+      select distinct b.parentid,(select name from t_category_info where categoryid = b.parentid) name 
+      from t_point_deduct_info a
+	  LEFT JOIN t_category_info b on a.categoryid = b.categoryid
+	  where a.merchantid = #{merchantId} and a.status = 0 and b.status = 1 and a.categoryid != 0
+    </select>
+    
+    <select id="getAllCategoryIdByMerchantIdAndParentId" parameterType="java.lang.Integer" resultType="com.jjn.mall.merchant.dao.pojo.TCategoryInfo">
+       select distinct a.categoryid ,b.name name from t_point_deduct_info a 
+		LEFT JOIN t_category_info b
+		on a.categoryid = b.categoryid
+		where a.merchantid = #{merchantId} and a.status = 0 and b.status=1 and a.categoryid != 0 and b.parentid = #{parentId}
+    </select>
+    
+</mapper>

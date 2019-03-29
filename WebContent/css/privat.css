@@ -1,0 +1,97 @@
+.privat_inputTxt input {
+    width: 180px;
+    height: 30px;
+}
+
+.privat_Sel select {
+    width: 78px;
+    height: 30px;
+}
+
+.privat_inputSub input {
+    width: 78px;
+    height: 30px;
+    border: 0px;
+    border-radius: 5px;
+    color: white;
+    background: rgb(22, 155, 213);
+}
+
+.prviat_main {}
+
+.prviat_main th {
+    background: rgb(102, 102, 102);
+    text-align: center;
+    font-weight: 200;
+    border-right: 1px solid #ccc;
+    height: 20px;
+    line-height: 30px;
+    color: white;
+}
+
+.prviat_main td {
+    text-align: center;
+    font-weight: 200;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    height: 20px;
+    line-height: 30px;
+}
+
+.privatr_modal1 {
+    padding-bottom: 20px;
+}
+
+.privatr_modal1 input {
+    width: 348px;
+    height: 44px;
+}
+
+.privatr_modal2 {
+    text-align: center;
+}
+
+.privatr_modal2 input {
+    text-indent: 5px;
+    border: 0px;
+    border-radius: 5px;
+    width: 140px;
+    height: 40px;
+    color: white;
+    background: rgb(22, 155, 213);
+}
+
+
+/* 寮圭獥鍗犱綅绗� */
+
+::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #999;
+    /*text-align: center;*/
+}
+
+ :-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #999;
+    /*text-align: center;*/
+}
+
+ ::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #999;
+    /*text-align: center;*/
+}
+
+ :-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #999;
+    /*text-align: center;*/
+}
+ .video_tab tr td{
+     width:20%;
+     height:50px;
+     text-overflow: ellipsis; /* for IE */
+     -moz-text-overflow: ellipsis; /* for Firefox,mozilla */
+     overflow: hidden;
+     white-space: nowrap;
+ }

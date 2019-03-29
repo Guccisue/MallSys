@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jjn.mall.report.dao.IReportFormDao">
+    <!-- 根据商户id对已完成已过售后期订单进行求和-->
+    <select id="getSumRecordById" resultType="com.jjn.mall.report.dao.pojo.TReportFormInfo" parameterType="com.jjn.mall.report.model.ReportFormInfoModel" >
+    SELECT
+		a.merchantid,
+		any_value(a.merchantname) merchantName,
+		DATE_FORMAT(ifnull(#{reportTime},now()),"%Y-%m-%d") reportTime,
+		COUNT(1) orderNum,
+		SUM(a.totalprice) orderMoney,
+		SUM(a.realfee) hasPayMoney,
+		IF (
+			any_value(a.refundstatus) = 4,
+			IFNULL(SUM(b.fee), 0),
+			0
+		) AS hasRefundMoney
+		FROM
+			t_order_record a
+		LEFT JOIN t_refund_record b ON b.orderid = a.orderid
+		WHERE
+			a.`status` = 5
+			<if test="null != merchantId and merchantId != ''">
+			 and a.merchantid = #{merchantId}
+			</if>
+			<if test="null != merchantName and merchantName != ''">
+			 and a.merchantname like "%"#{merchantName}"%" 
+			</if>
+		    AND DATE_FORMAT(a.receivetime,"%Y-%m") = DATE_FORMAT(DATE_SUB(ifnull(#{reportTime},now()),INTERVAL 1 MONTH),"%Y-%m")
+			AND DATE_FORMAT(a.receivetime,"%Y-%m-%d") &lt;= DATE_FORMAT(now(),"%Y-%m-%d")
+			GROUP BY
+			a.merchantid
+			limit #{startNum}, #{endNum};
+    </select>
+    
+    <!-- 根据商户id对已完成已过售后期订单进行求和-->
+    <select id="getSumRecordCountById" resultType="java.lang.Integer" parameterType="com.jjn.mall.report.model.ReportFormInfoModel" >
+    select count(1) from(SELECT
+		count(1)
+		FROM
+			t_order_record a
+		LEFT JOIN t_refund_record b ON b.orderid = a.orderid
+		WHERE
+			a.`status` = 5
+			<if test="null != merchantId and merchantId != ''">
+			 and a.merchantid = #{merchantId}
+			</if>
+			<if test="null != merchantName and merchantName != ''">
+			 and a.merchantname like "%"#{merchantName}"%" 
+			</if>
+		    AND DATE_FORMAT(a.receivetime,"%Y-%m") = DATE_FORMAT(DATE_SUB(ifnull(#{reportTime},now()),INTERVAL 1 MONTH),"%Y-%m")
+			AND DATE_FORMAT(a.receivetime,"%Y-%m-%d") &lt;= DATE_FORMAT(now(),"%Y-%m-%d")
+			GROUP BY
+			a.merchantid) temp
+		
+    </select>
+</mapper>

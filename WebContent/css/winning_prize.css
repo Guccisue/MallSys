@@ -1,0 +1,49 @@
+.writen_winning {
+    outline: none;
+    width: 300px;
+    height: 44px;
+    border: 1px solid #ccc;
+    text-indent: 10px;
+}
+
+.winning_search {
+    margin-left: 20px;
+}
+
+.btn_winning {
+    border: 1px solid #DBDBDB;
+    width: 90px;
+    height: 44px;
+    border-radius: 10px;
+    background-color: rgb(175, 215, 235);
+    color: white;
+    margin-left: 10px;
+}
+
+
+/* 表格 */
+
+.winning_excel {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.winning_excel_table {
+    width: 1040px;
+}
+
+.winning_excel_table th {
+    width: 12%;
+    height: 40px;
+    text-align: center;
+    background-color: rgb(102, 102, 102);
+    color: white;
+    font-weight: normal;
+}
+
+.winning_excel_table td {
+    width: 12%;
+    height: 40px;
+    text-align: center;
+    font-weight: normal;
+}
